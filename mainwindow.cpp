@@ -52,8 +52,9 @@ void MainWindow::on_pushButton_clicked()
         while (!inPotok.atEnd()){
             QString line = inPotok.readLine().trimmed();
             if (line.isEmpty()) continue;
-            QStringList listLine = line.split(" ", Qt::SkipEmptyParts);
-            if (listLine.size() == 2){
+            QDateTime dateTime = QDateTime::fromString(line, "yyyy-MM-dd_hh-mm-ss.zzz");
+            QStringList listLine = line.split(";", Qt::SkipEmptyParts);
+            if (listLine.size() == 57){
                 structPoints points;
                 points.x = listLine[0].toFloat();
                 points.y = listLine[1].toFloat();
@@ -62,5 +63,11 @@ void MainWindow::on_pushButton_clicked()
         }
         filePotok.close();
     }
+}
+
+
+void MainWindow::on_pushButton_2_clicked()
+{
+
 }
 
