@@ -17,7 +17,7 @@ void MainWindow::setupQuadraticDemo(QCustomPlot *customPlot)
     for (int i=0; i<101; ++i)
     {
         x[i] = i/50.0 - 1; // x goes from -1 to 1
-        y[i] = x[i]*x[i];  // let's plot a quadratic function
+        y[i] = x[i];  // let's plot a quadratic function
     }
     // create graph and assign data to it:
     customPlot->addGraph();
@@ -25,6 +25,9 @@ void MainWindow::setupQuadraticDemo(QCustomPlot *customPlot)
     // give the axes some labels:
     customPlot->xAxis->setLabel("x");
     customPlot->yAxis->setLabel("y");
+    customPlot->xAxis2->setVisible(true);  // верхняя ось(по умолчанию скрыта)
+    customPlot->yAxis2->setVisible(true);  // правая ось(по умолчанию скрыта)
+
     // set axes ranges, so we see all data:
     customPlot->xAxis->setRange(-1, 1);
     customPlot->yAxis->setRange(0, 1);
@@ -50,15 +53,18 @@ void MainWindow::on_pushButton_clicked()
     if (filePotok.open(QIODevice::ReadOnly|QIODevice::Text)){
         QTextStream inPotok(&filePotok);
         while (!inPotok.atEnd()){
-            QString line = inPotok.readLine().trimmed();
+            QString line = inPotok.readLine().trimmed();//.trimmed() убирает пробелы
+            //qDebug() << "Считанная строка" << line;
             if (line.isEmpty()) continue;
-            QDateTime dateTime = QDateTime::fromString(line, "yyyy-MM-dd_hh-mm-ss.zzz");
-            QStringList listLine = line.split(";", Qt::SkipEmptyParts);
-            if (listLine.size() == 57){
-                structPoints points;
-                points.x = listLine[0].toFloat();
-                points.y = listLine[1].toFloat();
-                vectorPoints.append(points);
+            QDateTime dateTime;
+            if (line.startsWith("[")){
+                int end = line.indexOf("]");
+                if (end != -1) {
+                    QString timeStr = line.mid(1, end -1);
+                    dateTime = QDateTime::fromString(timeStr, "yyyy-MM-dd_HH-mm-ss.zzz");
+                    qDebug() << "Считанная строка" << dateTime.toString("yyyy-MM-dd HH:mm:ss.zzz");
+                    line = line.mid(end+1);
+                }
             }
         }
         filePotok.close();
