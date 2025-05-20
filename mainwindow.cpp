@@ -80,31 +80,6 @@ void MainWindow::on_pushButton_clicked()
 
                     //сейчас в line, все содержимое строки, но удлалили время
                     qDebug() << line;
-
-                    // QStringList listLine = line.split(";", Qt::SkipEmptyParts);
-                    // QVector<float> znacheniaList;
-                    // for (const QString& item : listLine)
-                    // {
-                    //     QStringList pereborZnachenie = item.split("=", Qt::SkipEmptyParts);
-                    //     if (pereborZnachenie.size() == 2)//проверка, что в строке было два значения. Например TA_RTS=1, станет TA_RTS и 1.
-                    //     {
-                    //         QString key = pereborZnachenie[0].trimmed();
-                    //         QString znachStr = pereborZnachenie[1].trimmed();
-                    //         if (key == "TA_RTS")
-                    //         {
-                    //             bool ok;
-                    //             double znach = znachStr.toFloat(&ok);
-                    //             if (ok)
-                    //             {
-                    //                 x.append(seconds);
-                    //                 y.append(znach);
-                    //                 qDebug() << "x = " << x;
-                    //                 qDebug() << "y = " << y;
-                    //             }
-                    //         }
-
-                    //     }
-                    // }
                 }
             }
         }
@@ -117,11 +92,11 @@ void MainWindow::on_pushButton_2_clicked()
 {
     QVector<float> x, y;
 
-    QString textParametr = ui -> lineE_ParametrName -> text().trimmed();
-    if (!textParametr.isEmpty())
+    QString userParametr = ui -> lineE_ParametrName -> text().trimmed();
+    if (!userParametr.isEmpty())
     {
         bool ok = false;
-        textParametr.toFloat(&ok);
+        userParametr.toFloat(&ok);
         for(const QString &line : lines)
         {
             QStringList listLine = line.split(";", Qt::SkipEmptyParts);
@@ -133,7 +108,7 @@ void MainWindow::on_pushButton_2_clicked()
                 {
                     QString key = pereborZnachenie[0].trimmed();
                     QString znachStr = pereborZnachenie[1].trimmed();
-                    if (key == "TA_RTS")
+                    if (key == userParametr)
                     {
                         bool ok;
                         double znach = znachStr.toFloat(&ok);
