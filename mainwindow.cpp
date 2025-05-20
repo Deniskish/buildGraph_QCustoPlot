@@ -40,14 +40,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
-    QVector<structPoints> vectorPoints;
-    QVector<structPoints> vectorPointsLineEdit;
     /*Данные считываются с LineEdit и добавляются в QVector*/
     /*Данные читаются из файла выбранного пользователем*/
     QString fileContur = QFileDialog::getOpenFileName(nullptr, tr("Open file"), "", tr("text file (*.txt)"));
     qDebug() << "Выбран файл" << fileContur;
 
     if (fileContur.isEmpty()) return;//если файл пустой выход из окна
+
+    QVector<float> x, y;
+    QDateTime startTime;
 
     QFile filePotok(fileContur);
     if (filePotok.open(QIODevice::ReadOnly|QIODevice::Text)){
@@ -56,14 +57,54 @@ void MainWindow::on_pushButton_clicked()
             QString line = inPotok.readLine().trimmed();//.trimmed() убирает пробелы
             //qDebug() << "Считанная строка" << line;
             if (line.isEmpty()) continue;
+
+            //отделение QDateTime
             QDateTime dateTime;
             if (line.startsWith("[")){
                 int end = line.indexOf("]");
-                if (end != -1) {
+                if (end != -1) {//Проверяем, нашли ли мы скобку ]. Если indexOf вернёт -1, значит ] не найден, и дальше идти нельзя.
+
+
                     QString timeStr = line.mid(1, end -1);
-                    dateTime = QDateTime::fromString(timeStr, "yyyy-MM-dd_HH-mm-ss.zzz");
+                    dateTime = QDateTime::fromString(timeStr, "yyyy-MM-dd_HH-mm-ss.zzz");//определил QDateTime
+                    if (!dateTime.isValid()) continue;
+
+                    if (startTime.isValid())
+                        startTime = dateTime;
+
+                    float seconds = startTime.msecsTo(startTime);//перевел в милисекунды
+                    secondsList.append(seconds);
                     qDebug() << "Считанная строка" << dateTime.toString("yyyy-MM-dd HH:mm:ss.zzz");
-                    line = line.mid(end+1);
+                    line = line.mid(end+1);//удалить время
+                    lines.append(line);
+
+                    //сейчас в line, все содержимое строки, но удлалили время
+                    qDebug() << line;
+
+                    // QStringList listLine = line.split(";", Qt::SkipEmptyParts);
+                    // QVector<float> znacheniaList;
+                    // for (const QString& item : listLine)
+                    // {
+                    //     QStringList pereborZnachenie = item.split("=", Qt::SkipEmptyParts);
+                    //     if (pereborZnachenie.size() == 2)//проверка, что в строке было два значения. Например TA_RTS=1, станет TA_RTS и 1.
+                    //     {
+                    //         QString key = pereborZnachenie[0].trimmed();
+                    //         QString znachStr = pereborZnachenie[1].trimmed();
+                    //         if (key == "TA_RTS")
+                    //         {
+                    //             bool ok;
+                    //             double znach = znachStr.toFloat(&ok);
+                    //             if (ok)
+                    //             {
+                    //                 x.append(seconds);
+                    //                 y.append(znach);
+                    //                 qDebug() << "x = " << x;
+                    //                 qDebug() << "y = " << y;
+                    //             }
+                    //         }
+
+                    //     }
+                    // }
                 }
             }
         }
@@ -74,11 +115,43 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_pushButton_2_clicked()
 {
+    QVector<float> x, y;
+
     QString textParametr = ui -> lineE_ParametrName -> text().trimmed();
     if (!textParametr.isEmpty())
     {
         bool ok = false;
         textParametr.toFloat(&ok);
+        for(const QString &line : lines)
+        {
+            QStringList listLine = line.split(";", Qt::SkipEmptyParts);
+            QVector<float> znacheniaList;
+            for (const QString& item : listLine)
+            {
+                QStringList pereborZnachenie = item.split("=", Qt::SkipEmptyParts);
+                if (pereborZnachenie.size() == 2)//проверка, что в строке было два значения. Например TA_RTS=1, станет TA_RTS и 1.
+                {
+                    QString key = pereborZnachenie[0].trimmed();
+                    QString znachStr = pereborZnachenie[1].trimmed();
+                    if (key == "TA_RTS")
+                    {
+                        bool ok;
+                        double znach = znachStr.toFloat(&ok);
+                        if (ok)
+                        {
+                            for (const auto &seconds : secondsList)
+                            {
+                                x.append(seconds);
+                                y.append(znach);
+                                qDebug() << "x = " << x;
+                                qDebug() << "y = " << y;
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
     }
 }
 

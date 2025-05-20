@@ -40,7 +40,15 @@ public:
 
     void setupQuadraticDemo(QCustomPlot *customPlot);
 
+    QVector<QVector<float>> znacheniyaParametrs;
     QVector<float> znachenieParametr;
+    QVector<float> timeGraph;
+
+    QVector<QString>lines;
+    QString listznacheniy;
+
+    QVector<float> secondsList;
+
 
 private:
     Ui::MainWindow *ui;
