@@ -47,7 +47,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
+   <widget class="QLineEdit" name="lineE_ParametrName">
     <property name="geometry">
      <rect>
       <x>100</x>

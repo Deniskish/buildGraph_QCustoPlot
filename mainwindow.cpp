@@ -74,6 +74,11 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_pushButton_2_clicked()
 {
-
+    QString textParametr = ui -> lineE_ParametrName -> text().trimmed();
+    if (!textParametr.isEmpty())
+    {
+        bool ok = false;
+        textParametr.toFloat(&ok);
+    }
 }
 

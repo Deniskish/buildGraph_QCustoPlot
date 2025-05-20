@@ -40,6 +40,8 @@ public:
 
     void setupQuadraticDemo(QCustomPlot *customPlot);
 
+    QVector<float> znachenieParametr;
+
 private:
     Ui::MainWindow *ui;
     QString demoName;
