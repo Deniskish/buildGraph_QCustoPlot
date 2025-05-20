@@ -39,6 +39,7 @@ public:
     ~MainWindow();
 
     void setupQuadraticDemo(QCustomPlot *customPlot);
+    void plotFromFile(QCustomPlot *customPlot);
 
     QVector<QVector<float>> znacheniyaParametrs;
     QVector<float> znachenieParametr;

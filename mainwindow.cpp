@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setupQuadraticDemo(ui->customPlot);
+    //setupQuadraticDemo(ui->customPlot);
 }
 void MainWindow::setupQuadraticDemo(QCustomPlot *customPlot)
 {
@@ -38,7 +38,7 @@ MainWindow::~MainWindow()
 }
 
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_pushButton_clicked()//кнопка Open file
 {
     /*Данные считываются с LineEdit и добавляются в QVector*/
     /*Данные читаются из файла выбранного пользователем*/
@@ -69,10 +69,10 @@ void MainWindow::on_pushButton_clicked()
                     dateTime = QDateTime::fromString(timeStr, "yyyy-MM-dd_HH-mm-ss.zzz");//определил QDateTime
                     if (!dateTime.isValid()) continue;
 
-                    if (startTime.isValid())
+                    if (!startTime.isValid())//startTime не установлен, значит будет ошибка valid, если ошибка(в начале всегда) приравниваю к dateTime это первое значение времени
                         startTime = dateTime;
 
-                    float seconds = startTime.msecsTo(startTime);//перевел в милисекунды
+                    float seconds = startTime.msecsTo(dateTime)/1000;//перевел в милисекунды
                     secondsList.append(seconds);
                     qDebug() << "Считанная строка" << dateTime.toString("yyyy-MM-dd HH:mm:ss.zzz");
                     line = line.mid(end+1);//удалить время
@@ -88,19 +88,20 @@ void MainWindow::on_pushButton_clicked()
 }
 
 
-void MainWindow::on_pushButton_2_clicked()
+void MainWindow::on_pushButton_2_clicked()//кнопка Show
 {
-    QVector<float> x, y;
+    QVector<double> x, y;
 
     QString userParametr = ui -> lineE_ParametrName -> text().trimmed();
     if (!userParametr.isEmpty())
     {
         bool ok = false;
         userParametr.toFloat(&ok);
-        for(const QString &line : lines)
+        for (int i = 0; i < lines.size(); i++)
         {
+            QString line = lines[i];
+            double time = secondsList.value(i, -1);
             QStringList listLine = line.split(";", Qt::SkipEmptyParts);
-            QVector<float> znacheniaList;
             for (const QString& item : listLine)
             {
                 QStringList pereborZnachenie = item.split("=", Qt::SkipEmptyParts);
@@ -111,22 +112,36 @@ void MainWindow::on_pushButton_2_clicked()
                     if (key == userParametr)
                     {
                         bool ok;
-                        double znach = znachStr.toFloat(&ok);
-                        if (ok)
+                        float znach = znachStr.toDouble(&ok);
+                        if (ok && time >= 0)
                         {
-                            for (const auto &seconds : secondsList)
-                            {
-                                x.append(seconds);
-                                y.append(znach);
-                                qDebug() << "x = " << x;
-                                qDebug() << "y = " << y;
-                            }
+                            x.append(time);
+                            y.append(znach);
+                            qDebug() << "x = " << time << ", y = " << znach;
                         }
                     }
 
                 }
             }
         }
+
     }
+    ui->customPlot->clearGraphs();
+    ui->customPlot->addGraph();
+    ui->customPlot->graph(0)->setData(QVector<double>::fromList(x.toList()), QVector<double>::fromList(y.toList()));
+    ui->customPlot->xAxis->setLabel("Время (сек)");
+    ui->customPlot->yAxis->setLabel(userParametr);
+    ui->customPlot->xAxis2->setVisible(true);  // верхняя ось(по умолчанию скрыта)
+    ui->customPlot->yAxis2->setVisible(true);  // правая ось(по умолчанию скрыта)
+
+    if (!x.isEmpty()) {
+        ui->customPlot->xAxis->setRange(x.first(), x.last());
+    }
+    if (!y.isEmpty()) {
+        auto [minIt, maxIt] = std::minmax_element(y.begin(), y.end());
+        ui->customPlot->yAxis->setRange(*minIt, *maxIt);
+    }
+
+    ui->customPlot->replot();
 }
 
