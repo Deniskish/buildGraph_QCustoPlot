@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //setupQuadraticDemo(ui->customPlot);
+    setupQuadraticDemo(ui->customPlot);
 }
 void MainWindow::setupQuadraticDemo(QCustomPlot *customPlot)
 {
@@ -27,6 +27,10 @@ void MainWindow::setupQuadraticDemo(QCustomPlot *customPlot)
     customPlot->yAxis->setLabel("y");
     customPlot->xAxis2->setVisible(true);  // верхняя ось(по умолчанию скрыта)
     customPlot->yAxis2->setVisible(true);  // правая ось(по умолчанию скрыта)
+    ui->customPlot->setInteraction(QCP::iRangeDrag, true);
+    ui->customPlot->setInteraction(QCP::iRangeZoom, true);
+    // ui->customPlot->axisRect()->setRangeZoomAxes(ui->customPlot->xAxis, ui->customPlot->yAxis);
+    // ui->customPlot->axisRect()->setRangeZoomFactor(0.99);
 
     // set axes ranges, so we see all data:
     customPlot->xAxis->setRange(-1, 1);
@@ -47,7 +51,7 @@ void MainWindow::on_pushButton_clicked()//кнопка Open file
 
     if (fileContur.isEmpty()) return;//если файл пустой выход из окна
 
-    QVector<float> x, y;
+    QVector<double> x, y;
     QDateTime startTime;
 
     QFile filePotok(fileContur);
@@ -65,7 +69,7 @@ void MainWindow::on_pushButton_clicked()//кнопка Open file
                 if (end != -1) {//Проверяем, нашли ли мы скобку ]. Если indexOf вернёт -1, значит ] не найден, и дальше идти нельзя.
 
 
-                    QString timeStr = line.mid(1, end -1);
+                    QString timeStr = line.mid(1, end-1);//извлекает end-1 символов, ничная с 1(то есть, получится знаение между [ и ], это и есть время
                     dateTime = QDateTime::fromString(timeStr, "yyyy-MM-dd_HH-mm-ss.zzz");//определил QDateTime
                     if (!dateTime.isValid()) continue;
 
@@ -75,7 +79,7 @@ void MainWindow::on_pushButton_clicked()//кнопка Open file
                     float seconds = startTime.msecsTo(dateTime)/1000;//перевел в милисекунды
                     secondsList.append(seconds);
                     qDebug() << "Считанная строка" << dateTime.toString("yyyy-MM-dd HH:mm:ss.zzz");
-                    line = line.mid(end+1);//удалить время
+                    line = line.mid(end);//удалить время
                     lines.append(line);
 
                     //сейчас в line, все содержимое строки, но удлалили время
@@ -128,11 +132,16 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
     }
     ui->customPlot->clearGraphs();
     ui->customPlot->addGraph();
-    ui->customPlot->graph(0)->setData(QVector<double>::fromList(x.toList()), QVector<double>::fromList(y.toList()));
+    ui->customPlot->graph(0)->setData(x, y);
     ui->customPlot->xAxis->setLabel("Время (сек)");
     ui->customPlot->yAxis->setLabel(userParametr);
     ui->customPlot->xAxis2->setVisible(true);  // верхняя ось(по умолчанию скрыта)
     ui->customPlot->yAxis2->setVisible(true);  // правая ось(по умолчанию скрыта)
+    ui->customPlot->setInteraction(QCP::iRangeDrag, true);
+    ui->customPlot->setInteraction(QCP::iRangeZoom, true);
+    // ui->customPlot->axisRect()->setRangeZoomAxes(ui->customPlot->xAxis, ui->customPlot->yAxis);
+    // ui->customPlot->axisRect()->setRangeZoomFactor(0.1);
+
 
     if (!x.isEmpty()) {
         ui->customPlot->xAxis->setRange(x.first(), x.last());
