@@ -41,14 +41,16 @@ public:
     void setupQuadraticDemo(QCustomPlot *customPlot);
     void plotFromFile(QCustomPlot *customPlot);
 
-    QVector<QVector<float>> znacheniyaParametrs;
-    QVector<float> znachenieParametr;
-    QVector<float> timeGraph;
+    // QVector<QVector<float>> znacheniyaParametrs;
+    // QVector<float> znachenieParametr;
+    // QVector<float> timeGraph;
 
     QVector<QString>lines;
     QString listznacheniy;
+    QString fileContur_Name;
+    QString fileContur_NameNew;
 
-    QVector<float> secondsList;
+    QVector<double> secondsList;
 
 
 private:

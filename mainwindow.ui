@@ -37,7 +37,7 @@
      <string>Open file</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="lineE_NameFile">
     <property name="geometry">
      <rect>
       <x>90</x>
