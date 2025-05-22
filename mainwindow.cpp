@@ -80,12 +80,12 @@ void MainWindow::on_pushButton_clicked()//кнопка Open file
 
                     float seconds = startTime.msecsTo(dateTime)/1000;//перевел в милисекунды
                     secondsList.append(seconds);
-                    qDebug() << "Считанная строка" << dateTime.toString("yyyy-MM-dd HH:mm:ss.zzz");
+                    //() << "Считанная строка" << dateTime.toString("yyyy-MM-dd HH:mm:ss.zzz");
                     line = line.mid(end+1);//удалить время
                     lines.append(line);
 
                     //сейчас в line, все содержимое строки, но удлалили время
-                    qDebug() << line;
+                    //qDebug() << line;
                 }
             }
         }
@@ -123,7 +123,7 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
                         {
                             x.append(time);//время
                             y.append(znach);//значение
-                            qDebug() << "x = " << time << ", y = " << znach;
+                            //qDebug() << "x = " << time << ", y = " << znach;
                         }
                     }
 
@@ -174,10 +174,12 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
     //     ui->customPlot->saveBmp( fileContur_Name, ui->customPlot->width(), ui->customPlot->height() );
 
     // }
-    if( fileContur_Name.endsWith(".pdf") ){
+    if( fileContur_Name.endsWith(".txt") ){
         QMessageBox::information(this,"success","Successfully saved as PDF file");
 
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Open File"), "", tr("text file (*.txt)"));
+
+        //Сохранить файл с окончанием на .pdf
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Open File"), "", tr("text file (*.pdf)"));
         qDebug() << "Выбран файл:" << fileName;
         fileContur_NameNew = fileName;
 
@@ -191,12 +193,12 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
         file.close();
 
 
-        ui->customPlot->savePdf( fileContur_NameNew, ui->customPlot->width(), ui->customPlot->height() );
+        ui->customPlot->savePdf( fileContur_NameNew, ui->customPlot->width(), ui->customPlot->height());
 
     }
     else{
         // Otherwise, the hyperfix is ​​called .pdf Save File
-                           QMessageBox::information(this,"success","Susing success, saved as a PDF file by default");
+                           QMessageBox::information(this,"success","Susing success, saved as a PDF file by default(работает условие else");
         ui->customPlot->savePdf(fileContur_Name.append(".pdf"), ui->customPlot->width(), ui->customPlot->height() );
     }
 
