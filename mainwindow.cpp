@@ -156,7 +156,7 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
 
     ui->customPlot->replot();
     if( fileContur_Name == "" ){
-        QMessageBox::information(this,"fail","Save failed");
+        QMessageBox::information(this,"fail","Сохранить не удалось");
         return;
     }
     // if( fileContur_Name.endsWith(".png") ){
@@ -175,7 +175,7 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
 
     // }
     if( fileContur_Name.endsWith(".txt") ){
-        QMessageBox::information(this,"success","Successfully saved as PDF file");
+        QMessageBox::information(this,"success","«Успешно сохранено в виде PDF-файла»");
 
 
         //Сохранить файл с окончанием на .pdf
@@ -197,8 +197,8 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
 
     }
     else{
-        // Otherwise, the hyperfix is ​​called .pdf Save File
-                           QMessageBox::information(this,"success","Susing success, saved as a PDF file by default(работает условие else");
+        // В противном случае гиперссылка называется «Сохранить файл в формате .pdf»
+                           QMessageBox::information(this,"успешно","Успешно сохранено в формате PDF по умолчанию (работает условие else");
         ui->customPlot->savePdf(fileContur_Name.append(".pdf"), ui->customPlot->width(), ui->customPlot->height() );
     }
 
