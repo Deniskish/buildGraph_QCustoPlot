@@ -62,8 +62,8 @@ private:
     Ui::MainWindow *ui;
     QString demoName;
 
-    QCPItemTracer *tracer = nullptr;
-    //QMouseEvent mouseMove(QMouseEvent*);
+    QCPItemTracer *tracer = nullptr;//для маркера
+    QCPItemText *textWithTracer = nullptr;//для текста возле маркера
     void onMouseMove(QMouseEvent* event);
 
 

@@ -49,21 +49,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-// void MainWindow::mouseMoveEvent(QMouseEvent *event)
-// {
-//     if (ui->customPlot->underMouse())
-//     {
-//         double x = ui->customPlot->xAxis->pixelToCoord(event->pos().x());
-//         double y = ui->customPlot->yAxis->pixelToCoord(event->pos().y());
-
-//         QString tooltipText = QString("x: %1, y: %2")
-//                                   .arg(x, 0, 'f', 2)
-//                                   .arg(y, 0, 'f', 2);
-
-//         QToolTip::showText(event->globalPos(), tooltipText, this);
-//     }
-// }
-
 
 
 
@@ -246,38 +231,67 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
 }
 
 void MainWindow::onMouseMove(QMouseEvent* event) {
-    // Get mouse coordinates in plot coordinates
-    int x = ui->customPlot->xAxis->pixelToCoord(event->pos().x());
+    if (!ui->customPlot->graphCount()) return;
+    // Получить координаты мыши в координатах графика
+    int x = ui->customPlot->xAxis->pixelToCoord(event->pos().x());//pixelToCoord преобразует координату из пикселей окна в координаты данных графика (число с плавающей точкой).
     int y = ui->customPlot->yAxis->pixelToCoord(event->pos().y());
 
-    // Find the closest data point (example with a QCPGraph)
+    // Нахождение ближайшей точкки данных (пример с QCPGraph)
     double minDist = std::numeric_limits<double>::max();
-    int closestIndex = -1;
-    for (int i = 0; i < ui->customPlot->graph(0)->data()->size(); ++i) {
-        double dataX = ui->customPlot->graph(0)->data()->at(i)->key;
-        double dataY = ui->customPlot->graph(0)->data()->at(i)->value;
-        double dist = std::sqrt(std::pow(x - dataX, 2) + std::pow(y - dataY, 2));
-        if (dist < minDist) {
-            minDist = dist;
-            closestIndex = i;
+    int closestIndex = -1;//индекс точки, которая сейчас считается ближайшей к курсору. Изначально -1, то есть "нет подходящей точки".
+    auto graph = ui->customPlot->graph(0);
+    for (int i = 0; i < ui->customPlot->graph(0)->data()->size(); ++i) {//Цикл перебирает все точки данных графика с индексом 0 (первый график),->data() — возвращает контейнер с точками графика.
+
+
+
+        int graphSize = graph->data()->size();
+        if (graphSize == 0) return;
+
+        for (int i = 0; i < graphSize; ++i)
+        {
+            double dataX = ui->customPlot->graph(0)->data()->at(i)->key;//at(i) возвращает идентификатор по индексу i в списке контекста.
+            double dataY = ui->customPlot->graph(0)->data()->at(i)->value;
+            double dist = std::sqrt(std::pow(x - dataX, 2) + std::pow(y - dataY, 2));
+            if (dist < minDist) {
+                minDist = dist;
+                closestIndex = i;
+            }
         }
     }
 
-    //Если найдена близкая точка данных, отобразите маркер
-    if (closestIndex != -1 && minDist < 10) { //Порог для приближения
 
+    //Если найдена близкая точка данных, отображается маркер
+    if (closestIndex != -1 && minDist < 10) { //нашли хоть какую-то точку (индекс обновился)&&точка достаточно близко к мыши
+        // double znX = ui->customPlot->graph()->data()->at(closestIndex)->key;
+        // double znY = ui->customPlot->graph()->data()->at(closestIndex)->value;
+        // double znTime = -1;
         if (!tracer) {
-            tracer = new QCPItemTracer(ui->customPlot);
-            tracer->setGraph(ui->customPlot->graph(0));
-            tracer->setPen(QPen(Qt::red));
-            tracer->setBrush(Qt::red);
-            tracer->setStyle(QCPItemTracer::tsCircle);
-            tracer->setSize(7);
+            tracer = new QCPItemTracer(ui->customPlot);//создается новый QCPItemTracer (маркер)
+            tracer->setGraph(ui->customPlot->graph(0));//привязка к графу
+            tracer->setPen(QPen(Qt::red));//обводка
+            tracer->setBrush(Qt::red);//заливка
+            tracer->setStyle(QCPItemTracer::tsCircle);//форма
+            tracer->setSize(7);//размер
+
+            textWithTracer = new QCPItemText(ui->customPlot);
+            //textWithTracer->setText(secondsList(closestIndex));
+            textWithTracer->position->setParentAnchor(tracer->position);
         }
-        tracer->setGraphKey(ui->customPlot->graph(0)->data()->at(closestIndex)->key);
-        tracer->setVisible(true);
+        tracer->setGraphKey(ui->customPlot->graph(0)->data()->at(closestIndex)->key);//Устанавливаем положение маркера строго на координату X найденной ближайшей точки.
+        tracer->setVisible(true);//маркер видим
+        textWithTracer->setVisible(true);//маркер видим
+        double znTime;
+        if (closestIndex >= 0 && closestIndex < secondsList.size())
+            znTime = secondsList[closestIndex];
+        else
+            znTime = 0;
+        QString text = QString("Время: %1 c\nЗначение: %2").arg(znTime, 0, 'f', 3).arg(graph->data()->at(closestIndex)->value, 0, 'f', 3);
+        textWithTracer->setText(text);
+        textWithTracer->setVisible(true);
+
     } else if (tracer) {
-        tracer->setVisible(false);
+        tracer->setVisible(false);//не видим
+        textWithTracer->setVisible(false);//не видим
     }
     ui->customPlot->replot();
 }
