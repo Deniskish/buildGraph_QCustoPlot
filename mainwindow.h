@@ -51,6 +51,8 @@ public:
     QString fileContur_NameNew;
 
     QVector<double> secondsList;
+    int xAxis;
+    int yAxis;
 
 
 private:
@@ -60,5 +62,6 @@ private:
 private slots:
     void on_pushButton_clicked();
     void on_pushButton_2_clicked();
+    void showPointToolTip(QMouseEvent *event);
 };
 #endif // MAINWINDOW_H
