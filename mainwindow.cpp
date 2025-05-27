@@ -7,8 +7,16 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    //ui->customPlot->graph()->setScatterStyle(QCPScatterStyle::ssCircle);
+    //ui->customPlot->graph()->setLineStyle(QCPGraph::lsNone);
+    ui->customPlot->setMouseTracking(true);
+    connect(ui->customPlot, &QCustomPlot::mouseMove,this,&MainWindow::onMouseMove);
     //setupQuadraticDemo(ui->customPlot);
 }
+
+
+
+
 // void MainWindow::setupQuadraticDemo(QCustomPlot *customPlot)
 // {
 //     demoName = "Quadratic Demo";
@@ -40,6 +48,23 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+// void MainWindow::mouseMoveEvent(QMouseEvent *event)
+// {
+//     if (ui->customPlot->underMouse())
+//     {
+//         double x = ui->customPlot->xAxis->pixelToCoord(event->pos().x());
+//         double y = ui->customPlot->yAxis->pixelToCoord(event->pos().y());
+
+//         QString tooltipText = QString("x: %1, y: %2")
+//                                   .arg(x, 0, 'f', 2)
+//                                   .arg(y, 0, 'f', 2);
+
+//         QToolTip::showText(event->globalPos(), tooltipText, this);
+//     }
+// }
+
+
 
 
 void MainWindow::on_pushButton_clicked()//кнопка Open file
@@ -133,23 +158,16 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
 
     }
     ui->customPlot->clearGraphs();//очищает график
-
     // ui->customPlot->xAxis2->setVisible(true);  // верхняя ось(по умолчанию скрыта), так и не понял, зачем эти оси
     // ui->customPlot->yAxis2->setVisible(true);  // правая ось(по умолчанию скрыта)
-
     ui->customPlot->legend->setFont(QFont("Helvetica",9));
     ui->customPlot->addGraph();//добавляет график
-
-
 
     QPen pen;
     pen.setWidth(1);
     pen.setStyle(Qt::DashLine);//будет плавная линия
     pen.setColor(Qt::red);
-
-
     ui->customPlot->graph()->setData(x, y);//график строится по значения x, y
-
 
     //фигня какая то(ни на что ни на что не повлияло)
     //ui->customPlot->graph(0)->setAntialiased(true);  // сглаживает линии
@@ -158,19 +176,14 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
     //ui->customPlot->setAntialiasedElements(QCP::aeGraphs); // Включить для линий
     //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-
-
     ui->customPlot->xAxis->setLabel("Время (сек)");//значение по оси X
     ui->customPlot->yAxis->setLabel(userParametr);//значение по оси Y
-
-    //ui->customPlot->graph(0)->setBrush(QBrush(QColor(255,50,30,80)));//заливка области под графиком, послений параметр отвечает за прозрачность
-
+    ui->customPlot->graph(0)->setBrush(QBrush(QColor(255,50,30,80)));//заливка области под графиком, послений параметр отвечает за прозрачность
+    ui->customPlot->setMouseTracking(true);//включает отслеживание мыши
     ui->customPlot->setInteraction(QCP::iRangeDrag, true);//отвечает за перемещение графика, по нажатию мыши
     ui->customPlot->setInteraction(QCP::iRangeZoom, true);//отвечает за маштабирование графика, по нажатию мыши
     //ui->customPlot->axisRect()->setRangeZoomAxes(ui->customPlot->xAxis, ui->customPlot->Axis);//по сути то же перемещение графика
-    // ui->customPlot->axisRect()->setRangeZoomFactor(0.1);//параметр указывает на скорость маштабирования
-
-
+    //ui->customPlot->axisRect()->setRangeZoomFactor(0.1);//параметр указывает на скорость маштабирования
     if (!x.isEmpty()) {
         ui->customPlot->xAxis->setRange(x.first(), x.last());//диапозон оси время
     }
@@ -179,7 +192,6 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
         double maxY = *std::max_element(y.begin(), y.end());
         ui->customPlot->yAxis->setRange(minY, maxY);
     }
-
     ui->customPlot->replot();
     if( fileContur_Name == "" ){
         QMessageBox::information(this,"fail","Сохранить не удалось");
@@ -200,45 +212,72 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
     //     ui->customPlot->saveBmp( fileContur_Name, ui->customPlot->width(), ui->customPlot->height() );
 
     // }
-    // if( fileContur_Name.endsWith(".txt") ){
-    //     QMessageBox::information(this,"success","«Успешно сохранено в виде PDF-файла»");
+    if( fileContur_Name.endsWith(".txt") ){
+        QMessageBox::information(this,"success","«Успешно сохранено в виде PDF-файла»");
 
 
-    //     //Сохранить файл с окончанием на .pdf
-    //     QString fileName = QFileDialog::getSaveFileName(this, tr("Open File"), "", tr("text file (*.pdf)"));
-    //     qDebug() << "Выбран файл:" << fileName;
-    //     fileContur_NameNew = fileName;
+        //Сохранить файл с окончанием на .pdf
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Open File"), "", tr("text file (*.pdf)"));
+        qDebug() << "Выбран файл:" << fileName;
+        fileContur_NameNew = fileName;
 
-    //     if (fileName.isEmpty()) return;
+        if (fileName.isEmpty()) return;
 
-    //     QFile file(fileName);
-    //     if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
-    //         qDebug() << "Не удалось открыть файл для записи!";
-    //         return;
-    //     }
-    //     file.close();
+        QFile file(fileName);
+        if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
+            qDebug() << "Не удалось открыть файл для записи!";
+            return;
+        }
+        file.close();
 
 
-    //     ui->customPlot->savePdf( fileContur_NameNew, ui->customPlot->width(), ui->customPlot->height());
+        ui->customPlot->savePdf( fileContur_NameNew, ui->customPlot->width(), ui->customPlot->height());
 
-    // }
-    // else{
-    //     // В противном случае гиперссылка называется «Сохранить файл в формате .pdf»
-    //                        QMessageBox::information(this,"успешно","Успешно сохранено в формате PDF по умолчанию (работает условие else");
-    //     ui->customPlot->savePdf(fileContur_Name.append(".pdf"), ui->customPlot->width(), ui->customPlot->height() );
-    // }
-    connect(this, SIGNAL(mouseMove(QMouseEvent*)), this,SLOT(showPointToolTip(QMouseEvent*)));
+    }
+    else{
+        // В противном случае гиперссылка называется «Сохранить файл в формате .pdf»
+                           QMessageBox::information(this,"успешно","Успешно сохранено в формате PDF по умолчанию (работает условие else");
+        ui->customPlot->savePdf(fileContur_Name.append(".pdf"), ui->customPlot->width(), ui->customPlot->height() );
+    }
 
 
 
 
 }
-void MainWindow::showPointToolTip(QMouseEvent *event)
-{
 
-    int x = this->xAxis->pixelToCoord(event->pos().x());
-    int y = this->yAxis->pixelToCoord(event->pos().y());
+void MainWindow::onMouseMove(QMouseEvent* event) {
+    // Get mouse coordinates in plot coordinates
+    int x = ui->customPlot->xAxis->pixelToCoord(event->pos().x());
+    int y = ui->customPlot->yAxis->pixelToCoord(event->pos().y());
 
-    setToolTip(QString("%1 , %2").arg(x).arg(y));
+    // Find the closest data point (example with a QCPGraph)
+    double minDist = std::numeric_limits<double>::max();
+    int closestIndex = -1;
+    for (int i = 0; i < ui->customPlot->graph(0)->data()->size(); ++i) {
+        double dataX = ui->customPlot->graph(0)->data()->at(i)->key;
+        double dataY = ui->customPlot->graph(0)->data()->at(i)->value;
+        double dist = std::sqrt(std::pow(x - dataX, 2) + std::pow(y - dataY, 2));
+        if (dist < minDist) {
+            minDist = dist;
+            closestIndex = i;
+        }
+    }
 
+    //Если найдена близкая точка данных, отобразите маркер
+    if (closestIndex != -1 && minDist < 10) { //Порог для приближения
+
+        if (!tracer) {
+            tracer = new QCPItemTracer(ui->customPlot);
+            tracer->setGraph(ui->customPlot->graph(0));
+            tracer->setPen(QPen(Qt::red));
+            tracer->setBrush(Qt::red);
+            tracer->setStyle(QCPItemTracer::tsCircle);
+            tracer->setSize(7);
+        }
+        tracer->setGraphKey(ui->customPlot->graph(0)->data()->at(closestIndex)->key);
+        tracer->setVisible(true);
+    } else if (tracer) {
+        tracer->setVisible(false);
+    }
+    ui->customPlot->replot();
 }

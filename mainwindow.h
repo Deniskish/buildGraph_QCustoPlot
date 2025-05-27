@@ -41,6 +41,7 @@ public:
     void setupQuadraticDemo(QCustomPlot *customPlot);
     void plotFromFile(QCustomPlot *customPlot);
 
+
     // QVector<QVector<float>> znacheniyaParametrs;
     // QVector<float> znachenieParametr;
     // QVector<float> timeGraph;
@@ -53,15 +54,23 @@ public:
     QVector<double> secondsList;
     int xAxis;
     int yAxis;
+protected:
+    //void mouseMoveEvent(QMouseEvent *event) override;
 
 
 private:
     Ui::MainWindow *ui;
     QString demoName;
 
+    QCPItemTracer *tracer = nullptr;
+    //QMouseEvent mouseMove(QMouseEvent*);
+    void onMouseMove(QMouseEvent* event);
+
+
 private slots:
     void on_pushButton_clicked();
     void on_pushButton_2_clicked();
-    void showPointToolTip(QMouseEvent *event);
+
+
 };
 #endif // MAINWINDOW_H
