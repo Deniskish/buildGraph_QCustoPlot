@@ -285,7 +285,7 @@ void MainWindow::onMouseMove(QMouseEvent* event) {
             znTime = secondsList[closestIndex];
         else
             znTime = 0;
-        QString text = QString("Время: %1 c\nЗначение: %2").arg(znTime, 0, 'f', 3).arg(graph->data()->at(closestIndex)->value, 0, 'f', 3);
+        QString text = QString("Время: %1 c\nЗначение: %2 c\nЗначение: %3").arg(znTime, 0, 'f', 3).arg(graph->data()->at(closestIndex)->value, 0, 'f', 3).arg(graph->data()->at(closestIndex)->key, 0, 'f', 3);
         textWithTracer->setText(text);
         textWithTracer->setVisible(true);
 
