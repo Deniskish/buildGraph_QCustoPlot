@@ -52,6 +52,11 @@ public:
     QString fileContur_NameNew;
 
     QVector<double> secondsList;
+    QVector<QDateTime> timeDateList;
+    QVector<QString> dataString;
+    QStringList dataList;
+
+
     int xAxis;
     int yAxis;
 protected:
