@@ -88,11 +88,10 @@ void MainWindow::on_pushButton_clicked()//кнопка Open file
                     if (!startTime.isValid())//startTime не установлен, значит будет ошибка valid, если ошибка(в начале всегда) приравниваю к dateTime это первое значение времени
                     {
                         startTime = dateTime;
-
                     }
                     double seconds = startTime.msecsTo(dateTime)/1000;//перевел в милисекунды
                     secondsList.append(seconds);//для сохранния основного
-                    timeDateList.append(dateTime);
+                    timeDateList.append(dateTime);//для использования  в показе маркера и легенды даты для него то ж самое толькол джругой формат, поработат надо(Приоритет)
                     dataList.append(startTime.toString());//для использования  в показе маркера и легенды даты для него
                     //() << "Считанная строка" << dateTime.toString("yyyy-MM-dd HH:mm:ss.zzz");
                     line = line.mid(end+1);//удалить время
@@ -110,12 +109,12 @@ void MainWindow::on_pushButton_clicked()//кнопка Open file
 
 void MainWindow::on_pushButton_2_clicked()//кнопка Show
 {
-    for (const QString &dt : dataList){
-        qDebug() << "Время" << dt;
-    }
-    for (const QDateTime &xt : timeDateList){
-        qDebug() << "Время" << xt;
-    }
+    // for (const QString &dt : dataList){//для теста
+    //     qDebug() << "Время" << dt;
+    // }
+    // for (const QDateTime &xt : timeDateList){
+    //     qDebug() << "Время" << xt;
+    // }
     QVector<double> x, y;
 
     QString userParametr = ui -> lineE_ParametrName -> text().trimmed();//значение указанное пользователем
@@ -249,7 +248,7 @@ void MainWindow::onMouseMove(QMouseEvent* event) {
     // Нахождение ближайшей точкки данных (пример с QCPGraph)
     double minDist = std::numeric_limits<double>::max();
     int closestIndex = -1;//индекс точки, которая сейчас считается ближайшей к курсору. Изначально -1, то есть "нет подходящей точки".
-    auto graph = ui->customPlot->graph(0);
+    QCPGraph *graph = ui->customPlot->graph(0);
     for (int i = 0; i < ui->customPlot->graph(0)->data()->size(); ++i) {//Цикл перебирает все точки данных графика с индексом 0 (первый график),->data() — возвращает контейнер с точками графика.
 
 
@@ -268,49 +267,57 @@ void MainWindow::onMouseMove(QMouseEvent* event) {
             }
         }
     }
-    return;
 
-    // //Если найдена близкая точка данных, отображается маркер
-    // if (closestIndex != -1 && minDist < 10) { //нашли хоть какую-то точку (индекс обновился)&&точка достаточно близко к мыши
-    //     // double znX = ui->customPlot->graph()->data()->at(closestIndex)->key;
-    //     // double znY = ui->customPlot->graph()->data()->at(closestIndex)->value;
-    //     // double znTime = -1;
-    //     if (!tracer) {
-    //         tracer = new QCPItemTracer(ui->customPlot);//создается новый QCPItemTracer (маркер)
-    //         tracer->setGraph(ui->customPlot->graph(0));//привязка к графу
-    //         tracer->setPen(QPen(Qt::red));//обводка
-    //         tracer->setBrush(Qt::red);//заливка
-    //         tracer->setStyle(QCPItemTracer::tsCircle);//форма
-    //         tracer->setSize(7);//размер
+    //Если найдена близкая точка данных, отображается маркер
+    if (closestIndex != -1 && minDist < 10) { //нашли хоть какую-то точку (индекс обновился)&&точка достаточно близко к мыши
+        // double znX = ui->customPlot->graph()->data()->at(closestIndex)->key;
+        // double znY = ui->customPlot->graph()->data()->at(closestIndex)->value;
+        // double znTime = -1;
+        if (!tracer) {
+            tracer = new QCPItemTracer(ui->customPlot);//создается новый QCPItemTracer (маркер)
+            tracer->setGraph(ui->customPlot->graph(0));//привязка к графу
+            tracer->setPen(QPen(Qt::red));//обводка
+            tracer->setBrush(Qt::red);//заливка
+            tracer->setStyle(QCPItemTracer::tsCircle);//форма
+            tracer->setSize(7);//размер
 
-    //         textWithTracer = new QCPItemText(ui->customPlot);
-    //         //textWithTracer->setText(secondsList(closestIndex));
-    //         textWithTracer->position->setParentAnchor(tracer->position);
-    //     }
-    //     tracer->setGraphKey(ui->customPlot->graph(0)->data()->at(closestIndex)->key);//Устанавливаем положение маркера строго на координату X найденной ближайшей точки.
-    //     tracer->setVisible(true);//маркер видим
-    //     textWithTracer->setVisible(true);//маркер видим
-
+            textWithTracer = new QCPItemText(ui->customPlot);
+            //textWithTracer->setText(secondsList(closestIndex));
+            textWithTracer->position->setParentAnchor(tracer->position);
+        }
+        tracer->setGraphKey(ui->customPlot->graph(0)->data()->at(closestIndex)->key);//Устанавливаем положение маркера строго на координату X найденной ближайшей точки.
+        tracer->setVisible(true);//маркер видим
+        textWithTracer->setVisible(true);//маркер видим
 
 
 
-    //     //QDateTime dateTimeForGraph = QDateTime::fromString(secondsList[closestIndex], "yyyy-MM-dd_HH-mm-ss.zzz");//определил QDateTime
-    //     QDateTime dateTimeForGraph = secondsList[closestIndex];
 
-    //     if (!dateTimeForGraph.isValid()) return;
+        //QDateTime dateTimeForGraph = QDateTime::fromString(secondsList[closestIndex], "yyyy-MM-dd_HH-mm-ss.zzz");//определил QDateTime
+        QDateTime dateTimeForGraph = timeDateList[closestIndex];
 
-    //     if (closestIndex >= 0 && closestIndex < secondsList.size())
-    //         dateTimeForGraph = secondsList[closestIndex];
-    //     else
-    //         dateTimeForGraph = 0;
-    //     QString text = QString("Время: %1 c\nЗначение: %2 c\nЗначение: %3").arg(znTime, 0, 'f', 3).arg(graph->data()->at(closestIndex)->value, 0, 'f', 3).arg(graph->data()->at(closestIndex)->key, 0, 'f', 3);
-    //     textWithTracer->setText(text);
-    //     textWithTracer->setVisible(true);
 
-    // } else if (tracer) {
-    //     tracer->setVisible(false);//не видим
-    //     textWithTracer->setVisible(false);//не видим
-    // }
-    // ui->customPlot->replot();
+        // qDebug() << "что же будет дальше" <<dateTimeForGraph;
+
+        if (!dateTimeForGraph.isValid()) return;
+
+        if (closestIndex >= 0 && closestIndex < timeDateList.size())
+        {
+            dateTimeForGraph = timeDateList[closestIndex];
+        }
+        else
+        {
+            dateTimeForGraph = QDateTime();
+        }
+        QString s = dateTimeForGraph.toString("yyyy-MM-dd_HH-mm-ss.zzz");
+        qDebug() << "что же будет дальше" <<s;
+        QString text = QString("Время: %1 \nЗначение: %2 \nЗначение: %3").arg("что же будет дальше").arg(graph->data()->at(closestIndex)->value, 0, 'f', 3).arg(graph->data()->at(closestIndex)->key, 0, 'f', 3);
+        textWithTracer->setText(text);
+        textWithTracer->setVisible(true);
+
+    } else if (tracer) {
+        tracer->setVisible(false);//не видим
+        textWithTracer->setVisible(false);//не видим
+    }
+    ui->customPlot->replot();
 }
 
