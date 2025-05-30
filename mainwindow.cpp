@@ -208,33 +208,33 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
     // }
 
 
-    // if( fileContur_Name.endsWith(".txt") ){
-    //     QMessageBox::information(this,"success","«Успешно сохранено в виде PDF-файла»");
+    if( fileContur_Name.endsWith(".txt") ){
+        QMessageBox::information(this,"success","«Успешно сохранено в виде PDF-файла»");
 
 
-    //     //Сохранить файл с окончанием на .pdf
-    //     QString fileName = QFileDialog::getSaveFileName(this, tr("Open File"), "", tr("text file (*.pdf)"));
-    //     qDebug() << "Выбран файл:" << fileName;
-    //     fileContur_NameNew = fileName;
+        //Сохранить файл с окончанием на .pdf
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Open File"), "", tr("text file (*.pdf)"));
+        qDebug() << "Выбран файл:" << fileName;
+        fileContur_NameNew = fileName;
 
-    //     if (fileName.isEmpty()) return;
+        if (fileName.isEmpty()) return;
 
-    //     QFile file(fileName);
-    //     if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
-    //         qDebug() << "Не удалось открыть файл для записи!";
-    //         return;
-    //     }
-    //     file.close();
+        QFile file(fileName);
+        if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
+            qDebug() << "Не удалось открыть файл для записи!";
+            return;
+        }
+        file.close();
 
 
-    //     ui->customPlot->savePdf( fileContur_NameNew, ui->customPlot->width(), ui->customPlot->height());
+        ui->customPlot->savePdf( fileContur_NameNew, ui->customPlot->width(), ui->customPlot->height());
 
-    // }
-    // else{
-    //     // В противном случае гиперссылка называется «Сохранить файл в формате .pdf»
-    //                        QMessageBox::information(this,"успешно","Успешно сохранено в формате PDF по умолчанию (работает условие else");
-    //     ui->customPlot->savePdf(fileContur_Name.append(".pdf"), ui->customPlot->width(), ui->customPlot->height() );
-    // }
+    }
+    else{
+        // В противном случае гиперссылка называется «Сохранить файл в формате .pdf»
+                           QMessageBox::information(this,"успешно","Успешно сохранено в формате PDF по умолчанию (работает условие else");
+        ui->customPlot->savePdf(fileContur_Name.append(".pdf"), ui->customPlot->width(), ui->customPlot->height() );
+    }
 
 
 

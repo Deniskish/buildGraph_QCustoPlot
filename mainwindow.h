@@ -67,6 +67,7 @@ private:
     Ui::MainWindow *ui;
     QString demoName;
 
+
     QCPItemTracer *tracer = nullptr;//для маркера
     QCPItemText *textWithTracer = nullptr;//для текста возле маркера
     void onMouseMove(QMouseEvent* event);
@@ -77,5 +78,7 @@ private slots:
     void on_pushButton_2_clicked();
 
 
+
 };
 #endif // MAINWINDOW_H
+//30.05.2025
