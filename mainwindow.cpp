@@ -308,9 +308,10 @@ void MainWindow::onMouseMove(QMouseEvent* event) {
         {
             dateTimeForGraph = QDateTime();
         }
-        QString s = dateTimeForGraph.toString("yyyy-MM-dd_HH-mm-ss.zzz");
-        qDebug() << "что же будет дальше" <<s;
-        QString text = QString("Время: %1 \nЗначение: %2 \nЗначение: %3").arg("что же будет дальше").arg(graph->data()->at(closestIndex)->value, 0, 'f', 3).arg(graph->data()->at(closestIndex)->key, 0, 'f', 3);
+        QString dateTimeForGraphString = dateTimeForGraph.toString("yyyy-MM-dd_HH-mm-ss.zzz");
+        qDebug() << "что же будет дальше" <<dateTimeForGraphString;
+        //QString legend = s.to(dateTimeForGraph);
+        QString text = QString("Время: %1 \nЗначение: %2 \nЗначение: %3").arg(dateTimeForGraphString, 0, 'f', 3).arg(graph->data()->at(closestIndex)->value, 0, 'f', 3).arg(graph->data()->at(closestIndex)->key, 0, 'f', 3);
         textWithTracer->setText(text);
         textWithTracer->setVisible(true);
 
