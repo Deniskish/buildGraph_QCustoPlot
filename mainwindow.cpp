@@ -273,7 +273,7 @@ void MainWindow::onMouseMove(QMouseEvent* event) {
         // double znX = ui->customPlot->graph()->data()->at(closestIndex)->key;
         // double znY = ui->customPlot->graph()->data()->at(closestIndex)->value;
         // double znTime = -1;
-        if (!tracer) {
+        if (!tracer) {//если маркера не было(в начале его и не будет)
             tracer = new QCPItemTracer(ui->customPlot);//создается новый QCPItemTracer (маркер)
             tracer->setGraph(ui->customPlot->graph(0));//привязка к графу
             tracer->setPen(QPen(Qt::red));//обводка
@@ -282,7 +282,7 @@ void MainWindow::onMouseMove(QMouseEvent* event) {
             tracer->setSize(7);//размер
 
             textWithTracer = new QCPItemText(ui->customPlot);
-            //textWithTracer->setText(secondsList(closestIndex));
+            //textWithTracer->setText(timeDateList(closestIndex));
             textWithTracer->position->setParentAnchor(tracer->position);
         }
         tracer->setGraphKey(ui->customPlot->graph(0)->data()->at(closestIndex)->key);//Устанавливаем положение маркера строго на координату X найденной ближайшей точки.
@@ -311,8 +311,11 @@ void MainWindow::onMouseMove(QMouseEvent* event) {
         QString dateTimeForGraphString = dateTimeForGraph.toString("yyyy-MM-dd_HH-mm-ss.zzz");
         qDebug() << "что же будет дальше" <<dateTimeForGraphString;
         //QString legend = s.to(dateTimeForGraph);
-        QString text = QString("Время: %1 \nЗначение: %2 \nЗначение: %3").arg(dateTimeForGraphString, 0, 'f', 3).arg(graph->data()->at(closestIndex)->value, 0, 'f', 3).arg(graph->data()->at(closestIndex)->key, 0, 'f', 3);
-        textWithTracer->setText(text);
+        QString valueGraph = QString::number(graph->data()->at(closestIndex)->value);
+        QString keyGraph = QString::number(graph->data()->at(closestIndex)->key);
+        QString finalText = dateTimeForGraphString + "/n" + valueGraph + "/n" +  keyGraph;
+        //QString text = QString("Время: %1 \nЗначение: %2 \nЗначение: %3").arg(dateTimeForGraphString, 0, 'f', 3).arg(graph->data()->at(closestIndex)->value, 0, 'f', 3).arg(graph->data()->at(closestIndex)->key, 0, 'f', 3);
+        textWithTracer->setText(finalText);
         textWithTracer->setVisible(true);
 
     } else if (tracer) {
