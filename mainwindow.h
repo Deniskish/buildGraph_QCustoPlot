@@ -79,6 +79,7 @@ private slots:
 
 
 
+    void on_pushButton_3_clicked();
 };
 #endif // MAINWINDOW_H
 //30.05.2025

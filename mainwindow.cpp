@@ -154,12 +154,14 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
     ui->customPlot->clearGraphs();//очищает график
     // ui->customPlot->xAxis2->setVisible(true);  // верхняя ось(по умолчанию скрыта), так и не понял, зачем эти оси
     // ui->customPlot->yAxis2->setVisible(true);  // правая ось(по умолчанию скрыта)
-    ui->customPlot->legend->setFont(QFont("Helvetica",9));
+    ui->customPlot->legend->setFont(QFont("System",12));
     ui->customPlot->addGraph();//добавляет график
+    ui->customPlot->graph()->setAdaptiveSampling(false);
+
 
     QPen pen;
     pen.setWidth(1);
-    pen.setStyle(Qt::DashLine);//будет плавная линия
+    //pen.setStyle(Qt::DashLine);//будет плавная линия
     pen.setColor(Qt::red);
     ui->customPlot->graph()->setData(x, y);//график строится по значения x, y
 
@@ -172,7 +174,7 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
 
     ui->customPlot->xAxis->setLabel("Время (сек)");//значение по оси X
     ui->customPlot->yAxis->setLabel(userParametr);//значение по оси Y
-    ui->customPlot->graph(0)->setBrush(QBrush(QColor(255,50,30,80)));//заливка области под графиком, послений параметр отвечает за прозрачность
+    //ui->customPlot->graph(0)->setBrush(QBrush(QColor(255,50,30,80)));//заливка области под графиком, послений параметр отвечает за прозрачность
     ui->customPlot->setMouseTracking(true);//включает отслеживание мыши
     ui->customPlot->setInteraction(QCP::iRangeDrag, true);//отвечает за перемещение графика, по нажатию мыши
     ui->customPlot->setInteraction(QCP::iRangeZoom, true);//отвечает за маштабирование графика, по нажатию мыши
@@ -228,7 +230,6 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
 
 
         ui->customPlot->savePdf( fileContur_NameNew, ui->customPlot->width(), ui->customPlot->height());
-
     }
     else{
         // В противном случае гиперссылка называется «Сохранить файл в формате .pdf»
@@ -254,7 +255,6 @@ void MainWindow::onMouseMove(QMouseEvent* event) {
     for (int i = 0; i < ui->customPlot->graph(0)->data()->size(); ++i) {//Цикл перебирает все точки данных графика с индексом 0 (первый график),->data() — возвращает контейнер с точками графика.
 
 
-
         int graphSize = graph->data()->size();
         if (graphSize == 0) return;
 
@@ -271,10 +271,7 @@ void MainWindow::onMouseMove(QMouseEvent* event) {
     }
 
     //Если найдена близкая точка данных, отображается маркер
-    if (closestIndex != -1 && minDist < 10) { //нашли хоть какую-то точку (индекс обновился)&&точка достаточно близко к мыши
-        // double znX = ui->customPlot->graph()->data()->at(closestIndex)->key;
-        // double znY = ui->customPlot->graph()->data()->at(closestIndex)->value;
-        // double znTime = -1;
+    if (closestIndex != -1 && minDist < 10) { //нашли хоть какую-то точку (индекс обновился)&&точка достаточно близко к мыши;
         if (!tracer) {//если маркера не было(в начале его и не будет)
             tracer = new QCPItemTracer(ui->customPlot);//создается новый QCPItemTracer (маркер)
             tracer->setGraph(ui->customPlot->graph(0));//привязка к графу
@@ -291,15 +288,7 @@ void MainWindow::onMouseMove(QMouseEvent* event) {
         tracer->setVisible(true);//маркер видим
         textWithTracer->setVisible(true);//маркер видим
 
-
-
-
-        //QDateTime dateTimeForGraph = QDateTime::fromString(secondsList[closestIndex], "yyyy-MM-dd_HH-mm-ss.zzz");//определил QDateTime
         QDateTime dateTimeForGraph = timeDateList[closestIndex];
-
-
-        // qDebug() << "что же будет дальше" <<dateTimeForGraph;
-
         if (!dateTimeForGraph.isValid()) return;
 
         if (closestIndex >= 0 && closestIndex < timeDateList.size())
@@ -312,11 +301,9 @@ void MainWindow::onMouseMove(QMouseEvent* event) {
         }
         QString dateTimeForGraphString = dateTimeForGraph.toString("yyyy-MM-dd_HH-mm-ss.zzz");
         qDebug() << "что же будет дальше" <<dateTimeForGraphString;
-        //QString legend = s.to(dateTimeForGraph);
         QString valueGraph = QString::number(graph->data()->at(closestIndex)->value);
         QString keyGraph = QString::number(graph->data()->at(closestIndex)->key);
         QString finalText = dateTimeForGraphString + "\n" + valueGraph + "\n" +  keyGraph;
-        //QString text = QString("Время: %1 \nЗначение: %2 \nЗначение: %3").arg(dateTimeForGraphString, 0, 'f', 3).arg(graph->data()->at(closestIndex)->value, 0, 'f', 3).arg(graph->data()->at(closestIndex)->key, 0, 'f', 3);
         textWithTracer->setText(finalText);
         textWithTracer->setVisible(true);
 
@@ -325,5 +312,11 @@ void MainWindow::onMouseMove(QMouseEvent* event) {
         textWithTracer->setVisible(false);//не видим
     }
     ui->customPlot->replot();
+}
+
+
+void MainWindow::on_pushButton_3_clicked()
+{
+    close();
 }
 
