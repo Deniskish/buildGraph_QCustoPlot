@@ -54,6 +54,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()//кнопка Open file
 {
+
+
     /*Данные считываются с LineEdit и добавляются в QVector*/
     /*Данные читаются из файла выбранного пользователем*/
     QString fileContur = QFileDialog::getOpenFileName(nullptr, tr("Open file"), "", tr("text file (*.txt)"));
@@ -62,6 +64,10 @@ void MainWindow::on_pushButton_clicked()//кнопка Open file
 
     if (fileContur.isEmpty()) return;//если файл пустой выход из окна
     fileContur_Name = fileContur;
+    lines.clear();
+    secondsList.clear();
+    timeDateList.clear();//очистка данных старого графикаа
+    //-------------------
 
     QVector<double> x, y;
     QDateTime startTime;
@@ -91,8 +97,7 @@ void MainWindow::on_pushButton_clicked()//кнопка Open file
                     }
                     double seconds = startTime.msecsTo(dateTime)/1000;//перевел в милисекунды
                     secondsList.append(seconds);//для сохранния основного
-                    timeDateList.append(dateTime);//для использования  в показе маркера и легенды даты для него то ж самое толькол джругой формат, поработат надо(Приоритет)
-                    dataList.append(startTime.toString());//для использования  в показе маркера и легенды даты для него
+                    timeDateList.append(dateTime);//для использования  в показе маркера и легенды даты для него то ж самое толькол джругой формат, проработать надо(Приоритет)
                     //() << "Считанная строка" << dateTime.toString("yyyy-MM-dd HH:mm:ss.zzz");
                     line = line.mid(end+1);//удалить время
                     lines.append(line);
@@ -109,6 +114,7 @@ void MainWindow::on_pushButton_clicked()//кнопка Open file
 
 void MainWindow::on_pushButton_2_clicked()//кнопка Show
 {
+    ui->customPlot->clearGraphs();//очищает график
     // for (const QString &dt : dataList){//для теста
     //     qDebug() << "Время" << dt;
     // }
@@ -252,26 +258,30 @@ void MainWindow::onMouseMove(QMouseEvent* event) {
     double minDist = std::numeric_limits<double>::max();
     int closestIndex = -1;//индекс точки, которая сейчас считается ближайшей к курсору. Изначально -1, то есть "нет подходящей точки".
     QCPGraph *graph = ui->customPlot->graph(0);
-    for (int i = 0; i < ui->customPlot->graph(0)->data()->size(); ++i) {//Цикл перебирает все точки данных графика с индексом 0 (первый график),->data() — возвращает контейнер с точками графика.
 
 
-        int graphSize = graph->data()->size();
-        if (graphSize == 0) return;
+    int graphSize = graph->data()->size();
+    if (graphSize == 0) return;
 
-        for (int i = 0; i < graphSize; ++i)
-        {
-            double dataX = ui->customPlot->graph(0)->data()->at(i)->key;//at(i) возвращает идентификатор по индексу i в списке контекста.
-            double dataY = ui->customPlot->graph(0)->data()->at(i)->value;
-            double dist = std::sqrt(std::pow(x - dataX, 2) + std::pow(y - dataY, 2));
-            if (dist < minDist) {
-                minDist = dist;
-                closestIndex = i;
-            }
+    for (int i = 0; i < graphSize; ++i)
+    {
+        double dataX = ui->customPlot->graph(0)->data()->at(i)->key;//at(i) возвращает идентификатор по индексу i в списке контекста.
+        double dataY = ui->customPlot->graph(0)->data()->at(i)->value;
+        double dist = std::sqrt(std::pow(x - dataX, 2) + std::pow(y - dataY, 2));
+        if (dist < minDist) {
+            minDist = dist;
+            closestIndex = i;
         }
     }
 
     //Если найдена близкая точка данных, отображается маркер
     if (closestIndex != -1 && minDist < 10) { //нашли хоть какую-то точку (индекс обновился)&&точка достаточно близко к мыши;
+
+        if (tracer)//это условие нужно для того, чтобы при открытии другого файла, произошла привязка маркера к другому графику
+        {
+            tracer->setGraph(ui->customPlot->graph(0));
+        }
+
         if (!tracer) {//если маркера не было(в начале его и не будет)
             tracer = new QCPItemTracer(ui->customPlot);//создается новый QCPItemTracer (маркер)
             tracer->setGraph(ui->customPlot->graph(0));//привязка к графу
@@ -284,6 +294,7 @@ void MainWindow::onMouseMove(QMouseEvent* event) {
             //textWithTracer->setText(timeDateList(closestIndex));
             textWithTracer->position->setParentAnchor(tracer->position);
         }
+
         tracer->setGraphKey(ui->customPlot->graph(0)->data()->at(closestIndex)->key);//Устанавливаем положение маркера строго на координату X найденной ближайшей точки.
         tracer->setVisible(true);//маркер видим
         textWithTracer->setVisible(true);//маркер видим
