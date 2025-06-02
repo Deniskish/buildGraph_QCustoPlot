@@ -55,7 +55,6 @@ MainWindow::~MainWindow()
 void MainWindow::on_pushButton_clicked()//кнопка Open file
 {
 
-
     /*Данные считываются с LineEdit и добавляются в QVector*/
     /*Данные читаются из файла выбранного пользователем*/
     QString fileContur = QFileDialog::getOpenFileName(nullptr, tr("Open file"), "", tr("text file (*.txt)"));
@@ -64,6 +63,7 @@ void MainWindow::on_pushButton_clicked()//кнопка Open file
 
     if (fileContur.isEmpty()) return;//если файл пустой выход из окна
     fileContur_Name = fileContur;
+
     lines.clear();
     secondsList.clear();
     timeDateList.clear();//очистка данных старого графикаа
