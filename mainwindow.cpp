@@ -210,7 +210,7 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
 
 void MainWindow::onMouseClicked(QMouseEvent *event)
 {
-    qDebug() << "Нажатие в точке" << event->pos();
+    qDebug() << "Нажатие в точке" << event->pos().x() << " " << event->pos().y();
 }
 
 
