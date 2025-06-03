@@ -55,7 +55,7 @@ public:
     QVector<QDateTime> timeDateList;
     QVector<QString> dataString;
     QStringList dataList;
-
+    double AvarageHeader;
 
     int xAxis;
     int yAxis;
@@ -63,6 +63,13 @@ protected:
     //void mouseMoveEvent(QMouseEvent *event) override;
 
 
+private slots:
+    void on_pushButton_clicked();
+    void on_pushButton_2_clicked();
+    void on_pushButton_3_clicked();
+    void on_pushButton_4_clicked();
+    void on_pushButton_5_clicked();
+    void on_pushButton_6_clicked();
 private:
     Ui::MainWindow *ui;
     QString demoName;
@@ -71,13 +78,8 @@ private:
     QCPItemTracer *tracer = nullptr;//для маркера
     QCPItemText *textWithTracer = nullptr;//для текста возле маркера
     void onMouseMove(QMouseEvent* event);
+    void onMouseClicked(QMouseEvent* event);
 
-
-private slots:
-    void on_pushButton_clicked();
-    void on_pushButton_2_clicked();
-    void on_pushButton_3_clicked();
-    void on_pushButton_4_clicked();
 };
 #endif // MAINWINDOW_H
 //30.05.2025

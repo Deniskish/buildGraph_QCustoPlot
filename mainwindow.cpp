@@ -11,6 +11,12 @@ MainWindow::MainWindow(QWidget *parent)
     //ui->customPlot->graph()->setLineStyle(QCPGraph::lsNone);
     ui->customPlot->setMouseTracking(true);
     connect(ui->customPlot, &QCustomPlot::mouseMove,this,&MainWindow::onMouseMove);
+    connect(ui->customPlot, &QCustomPlot::mousePress, this, &MainWindow::onMouseClicked);
+
+    ui->lineE_NameFile -> setPlaceholderText("Здесь появится путь к файлу, который будет открыт...");
+    ui->lineE_ParametrName -> setPlaceholderText("Введите название параметра...");
+    ui->lineE_Avarage -> setPlaceholderText("Здесь появится текст...");
+
     //setupQuadraticDemo(ui->customPlot);
 }
 
@@ -66,7 +72,7 @@ void MainWindow::on_pushButton_clicked()//кнопка Open file
 
     lines.clear();
     secondsList.clear();
-    timeDateList.clear();//очистка данных старого графикаа
+    timeDateList.clear();//очистка данных старого графика
     //-------------------
 
     QVector<double> x, y;
@@ -184,71 +190,29 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
     ui->customPlot->setMouseTracking(true);//включает отслеживание мыши
     ui->customPlot->setInteraction(QCP::iRangeDrag, true);//отвечает за перемещение графика, по нажатию мыши
     ui->customPlot->setInteraction(QCP::iRangeZoom, true);//отвечает за маштабирование графика, по нажатию мыши
-    //ui->customPlot->axisRect()->setRangeZoomAxes(ui->customPlot->xAxis, ui->customPlot->Axis);//по сути то же перемещение графика
+
+    //ui->customPlot->axisRect()->setRangeZoomAxes(ui->customPlot->xAxis, ui->customPlot->yAxis);//по сути то же перемещение графика
     //ui->customPlot->axisRect()->setRangeZoomFactor(0.1);//параметр указывает на скорость маштабирования
+
     if (!x.isEmpty()) {
         ui->customPlot->xAxis->setRange(x.first(), x.last());//диапозон оси время
     }
+
+
     if (!y.isEmpty()) {
         double minY = *std::min_element(y.begin(), y.end());
         double maxY = *std::max_element(y.begin(), y.end());
         ui->customPlot->yAxis->setRange(minY, maxY);
     }
     ui->customPlot->replot();
-
-
-    // if( fileContur_Name == "" ){
-    //     QMessageBox::information(this,"fail","Сохранить не удалось");
-    //     return;
-    // }
-
-
-    // if( fileContur_Name.endsWith(".png") ){
-    //     QMessageBox::information(this,"success","Successfully saved as PNG file");
-    //     ui->customPlot->savePng( fileContur_Name, ui->customPlot->width(), ui->customPlot->height() );
-
-    // }
-    // if( fileContur_Name.endsWith(".jpg")||fileContur_Name.endsWith(".jpeg") ){
-    //     QMessageBox::information(this,"success","Successfully saved as JPG file");
-    //     ui->customPlot->saveJpg( fileContur_Name, ui->customPlot->width(), ui->customPlot->height() );
-
-    // }
-    // if( fileContur_Name.endsWith(".bmp") ){
-    //     QMessageBox::information(this,"success","Successfully saved as BMP file");
-    //     ui->customPlot->saveBmp( fileContur_Name, ui->customPlot->width(), ui->customPlot->height() );
-
-    // }
-    // if( fileContur_Name.endsWith(".txt") ){
-    //     QMessageBox::information(this,"success","«Успешно сохранено в виде PDF-файла»");
-
-
-    //     //Сохранить файл с окончанием на .pdf
-    //     QString fileName = QFileDialog::getSaveFileName(this, tr("Open File"), "", tr("text file (*.pdf)"));
-    //     qDebug() << "Выбран файл:" << fileName;
-    //     fileContur_NameNew = fileName;
-
-    //     if (fileName.isEmpty()) return;
-
-    //     QFile file(fileName);
-    //     if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
-    //         qDebug() << "Не удалось открыть файл для записи!";
-    //         return;
-    //     }
-    //     file.close();
-
-
-    //     ui->customPlot->savePdf( fileContur_NameNew, ui->customPlot->width(), ui->customPlot->height());
-    // }
-    // else{
-    //     // В противном случае гиперссылка называется «Сохранить файл в формате .pdf»
-    //                        QMessageBox::information(this,"успешно","Успешно сохранено в формате PDF по умолчанию (работает условие else");
-    //     ui->customPlot->savePdf(fileContur_Name.append(".pdf"), ui->customPlot->width(), ui->customPlot->height() );
-    // }
-
-
-
-
 }
+
+
+void MainWindow::onMouseClicked(QMouseEvent *event)
+{
+    qDebug() << "Нажатие в точке" << event->pos();
+}
+
 
 void MainWindow::onMouseMove(QMouseEvent* event) {
     if (!ui->customPlot->graphCount()) return;
@@ -314,17 +278,43 @@ void MainWindow::onMouseMove(QMouseEvent* event) {
         }
         QString dateTimeForGraphString = dateTimeForGraph.toString("yyyy-MM-dd_HH-mm-ss.zzz");
         //qDebug() << "что же будет дальше" <<dateTimeForGraphString;
-        QString valueGraph = QString::number(graph->data()->at(closestIndex)->value);
-        QString keyGraph = QString::number(graph->data()->at(closestIndex)->key);
-        QString finalText = dateTimeForGraphString + "\n" + valueGraph + "\n" +  keyGraph;
-        textWithTracer->setText(finalText);
-        textWithTracer->setVisible(true);
+        QString valueGraph = QString::number(graph->data()->at(closestIndex)->value);//значение
+        QString keyGraph = QString::number(graph->data()->at(closestIndex)->key);//время в другом формате(не используем)
+        QString finalText = dateTimeForGraphString + "\n" +  valueGraph;
+        textWithTracer->setText(finalText);//функция добавления текста
+        textWithTracer->setPen(QPen(Qt::SolidLine));//рамка вокруг текста
+        textWithTracer->position->setCoords(0, -25);//позиция текста относительно маркера
+
+        textWithTracer->setFont(QFont("System",24));//Выбранный шрифт
+        textWithTracer->setVisible(true);//видим
+
+
 
     } else if (tracer) {
         tracer->setVisible(false);//не видим
         textWithTracer->setVisible(false);//не видим
     }
+    ui->lineE_Avarage->setText(QString::number(AvarageHeader));
     ui->customPlot->replot();
+
+
+    QCPDataSelection selection = ui->customPlot->graph(0)->selection();
+    double sum = 0;
+    foreach (QCPDataRange dataRange, selection.dataRanges())
+    {
+        QCPGraphDataContainer::const_iterator begin = graph->data()->at(dataRange.begin()); // получить итератор запуска диапазона из индекса
+        QCPGraphDataContainer::const_iterator end = graph->data()->at(dataRange.end()); // получить конечный итератор диапазона из индекса
+        for (QCPGraphDataContainer::const_iterator it=begin; it!=end; ++it)
+        {
+            // Итератор «it» пройдёт по всем выбранным точкам данных. В качестве примера мы вычисляем среднее значение
+            sum += it->value;
+            qDebug() << sum;
+        }
+    }
+    double average = sum/selection.dataPointCount();
+    //qDebug() << average;
+    AvarageHeader = average;
+    ui->lineE_Avarage->setText(QString::number(AvarageHeader));
 }
 
 
@@ -384,4 +374,37 @@ void MainWindow::on_pushButton_4_clicked()
         ui->customPlot->savePdf(fileContur_Name.append(".pdf"), ui->customPlot->width(), ui->customPlot->height() );
     }
 }
+
+
+void MainWindow::on_pushButton_5_clicked()//-, Reduce
+{
+    //ui->customPlot->setInteraction(QCP::iMultiSelect, true);
+
+
+    double centerY = ui->customPlot->yAxis->range().center();
+
+    // Уменьшение диапазона в 2 раза
+    ui->customPlot->yAxis->scaleRange(0.5, centerY);
+    ui->customPlot->replot();
+    //ui->customPlot->xAxis
+}
+
+
+void MainWindow::on_pushButton_6_clicked()//+, Increase
+{
+    //ui->customPlot->axisRect()->setRangeZoomAxes(ui->customPlot->xAxis, ui->customPlot->yAxis);//по сути то же перемещение графика
+
+
+    // Центр масштабирования — середина текущего диапазона
+    double centerY = ui->customPlot->yAxis->range().center();
+
+    // Увеличение диапазона в 2 раза
+    ui->customPlot->yAxis->scaleRange(1.5, centerY);
+    ui->customPlot->replot();
+
+}
+
+
+
+
 

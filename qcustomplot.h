@@ -6660,19 +6660,19 @@ public:
   QMargins padding() const { return mPadding; }
   
   // setters;
-  void setColor(const QColor &color);
-  void setSelectedColor(const QColor &color);
-  void setPen(const QPen &pen);
-  void setSelectedPen(const QPen &pen);
-  void setBrush(const QBrush &brush);
-  void setSelectedBrush(const QBrush &brush);
-  void setFont(const QFont &font);
-  void setSelectedFont(const QFont &font);
-  void setText(const QString &text);
-  void setPositionAlignment(Qt::Alignment alignment);
-  void setTextAlignment(Qt::Alignment alignment);
-  void setRotation(double degrees);
-  void setPadding(const QMargins &padding);
+  void setColor(const QColor &color);//Установить цвет
+  void setSelectedColor(const QColor &color);//Установить выбранный цвет
+  void setPen(const QPen &pen);//Установочная ручка
+  void setSelectedPen(const QPen &pen);//Установить выбранную точку
+  void setBrush(const QBrush &brush);//Установочная щетка
+  void setSelectedBrush(const QBrush &brush);//Установить выбранную кисть
+  void setFont(const QFont &font);//Установить фон
+  void setSelectedFont(const QFont &font);//Выбранный шрифт
+  void setText(const QString &text);//добавить текст
+  void setPositionAlignment(Qt::Alignment alignment);//Выравнивание по положению
+  void setTextAlignment(Qt::Alignment alignment);//Выравнивание текста
+  void setRotation(double degrees);//вращение?
+  void setPadding(const QMargins &padding);//Дополнение к настройкам
   
   // reimplemented virtual methods:
   virtual double selectTest(const QPointF &pos, bool onlySelectable, QVariant *details=nullptr) const Q_DECL_OVERRIDE;
