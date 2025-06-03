@@ -195,10 +195,14 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
         ui->customPlot->yAxis->setRange(minY, maxY);
     }
     ui->customPlot->replot();
-    if( fileContur_Name == "" ){
-        QMessageBox::information(this,"fail","Сохранить не удалось");
-        return;
-    }
+
+
+    // if( fileContur_Name == "" ){
+    //     QMessageBox::information(this,"fail","Сохранить не удалось");
+    //     return;
+    // }
+
+
     // if( fileContur_Name.endsWith(".png") ){
     //     QMessageBox::information(this,"success","Successfully saved as PNG file");
     //     ui->customPlot->savePng( fileContur_Name, ui->customPlot->width(), ui->customPlot->height() );
@@ -214,34 +218,32 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
     //     ui->customPlot->saveBmp( fileContur_Name, ui->customPlot->width(), ui->customPlot->height() );
 
     // }
+    // if( fileContur_Name.endsWith(".txt") ){
+    //     QMessageBox::information(this,"success","«Успешно сохранено в виде PDF-файла»");
 
 
-    if( fileContur_Name.endsWith(".txt") ){
-        QMessageBox::information(this,"success","«Успешно сохранено в виде PDF-файла»");
+    //     //Сохранить файл с окончанием на .pdf
+    //     QString fileName = QFileDialog::getSaveFileName(this, tr("Open File"), "", tr("text file (*.pdf)"));
+    //     qDebug() << "Выбран файл:" << fileName;
+    //     fileContur_NameNew = fileName;
+
+    //     if (fileName.isEmpty()) return;
+
+    //     QFile file(fileName);
+    //     if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
+    //         qDebug() << "Не удалось открыть файл для записи!";
+    //         return;
+    //     }
+    //     file.close();
 
 
-        //Сохранить файл с окончанием на .pdf
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Open File"), "", tr("text file (*.pdf)"));
-        qDebug() << "Выбран файл:" << fileName;
-        fileContur_NameNew = fileName;
-
-        if (fileName.isEmpty()) return;
-
-        QFile file(fileName);
-        if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
-            qDebug() << "Не удалось открыть файл для записи!";
-            return;
-        }
-        file.close();
-
-
-        ui->customPlot->savePdf( fileContur_NameNew, ui->customPlot->width(), ui->customPlot->height());
-    }
-    else{
-        // В противном случае гиперссылка называется «Сохранить файл в формате .pdf»
-                           QMessageBox::information(this,"успешно","Успешно сохранено в формате PDF по умолчанию (работает условие else");
-        ui->customPlot->savePdf(fileContur_Name.append(".pdf"), ui->customPlot->width(), ui->customPlot->height() );
-    }
+    //     ui->customPlot->savePdf( fileContur_NameNew, ui->customPlot->width(), ui->customPlot->height());
+    // }
+    // else{
+    //     // В противном случае гиперссылка называется «Сохранить файл в формате .pdf»
+    //                        QMessageBox::information(this,"успешно","Успешно сохранено в формате PDF по умолчанию (работает условие else");
+    //     ui->customPlot->savePdf(fileContur_Name.append(".pdf"), ui->customPlot->width(), ui->customPlot->height() );
+    // }
 
 
 
@@ -311,7 +313,7 @@ void MainWindow::onMouseMove(QMouseEvent* event) {
             dateTimeForGraph = QDateTime();
         }
         QString dateTimeForGraphString = dateTimeForGraph.toString("yyyy-MM-dd_HH-mm-ss.zzz");
-        qDebug() << "что же будет дальше" <<dateTimeForGraphString;
+        //qDebug() << "что же будет дальше" <<dateTimeForGraphString;
         QString valueGraph = QString::number(graph->data()->at(closestIndex)->value);
         QString keyGraph = QString::number(graph->data()->at(closestIndex)->key);
         QString finalText = dateTimeForGraphString + "\n" + valueGraph + "\n" +  keyGraph;
@@ -329,5 +331,57 @@ void MainWindow::onMouseMove(QMouseEvent* event) {
 void MainWindow::on_pushButton_3_clicked()
 {
     close();
+}
+
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    if( fileContur_Name == "" ){
+        QMessageBox::information(this,"fail","Сохранить не удалось");
+        return;
+    }
+
+
+    // if( fileContur_Name.endsWith(".png") ){
+    //     QMessageBox::information(this,"success","Successfully saved as PNG file");
+    //     ui->customPlot->savePng( fileContur_Name, ui->customPlot->width(), ui->customPlot->height() );
+
+    // }
+    // if( fileContur_Name.endsWith(".jpg")||fileContur_Name.endsWith(".jpeg") ){
+    //     QMessageBox::information(this,"success","Successfully saved as JPG file");
+    //     ui->customPlot->saveJpg( fileContur_Name, ui->customPlot->width(), ui->customPlot->height() );
+
+    // }
+    // if( fileContur_Name.endsWith(".bmp") ){
+    //     QMessageBox::information(this,"success","Successfully saved as BMP file");
+    //     ui->customPlot->saveBmp( fileContur_Name, ui->customPlot->width(), ui->customPlot->height() );
+
+    // }
+    if( fileContur_Name.endsWith(".txt") ){
+        QMessageBox::information(this,"success","«Успешно сохранено в виде PDF-файла»");
+
+
+        //Сохранить файл с окончанием на .pdf
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Open File"), "", tr("text file (*.pdf)"));
+        qDebug() << "Выбран файл:" << fileName;
+        fileContur_NameNew = fileName;
+
+        if (fileName.isEmpty()) return;
+
+        QFile file(fileName);
+        if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
+            qDebug() << "Не удалось открыть файл для записи!";
+            return;
+        }
+        file.close();
+
+
+        ui->customPlot->savePdf( fileContur_NameNew, ui->customPlot->width(), ui->customPlot->height());
+    }
+    else{
+        // В противном случае гиперссылка называется «Сохранить файл в формате .pdf»
+        QMessageBox::information(this,"успешно","Успешно сохранено в формате PDF по умолчанию (работает условие else");
+        ui->customPlot->savePdf(fileContur_Name.append(".pdf"), ui->customPlot->width(), ui->customPlot->height() );
+    }
 }
 
