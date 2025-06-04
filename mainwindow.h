@@ -56,6 +56,7 @@ public:
     QVector<QString> dataString;
     QStringList dataList;
     double AvarageHeader;
+    QVector<double> ValueHeader;
 
     int xAxis;
     int yAxis;

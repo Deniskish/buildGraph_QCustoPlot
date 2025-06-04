@@ -57,10 +57,8 @@ MainWindow::~MainWindow()
 
 
 
-
 void MainWindow::on_pushButton_clicked()//кнопка Open file
 {
-
     /*Данные считываются с LineEdit и добавляются в QVector*/
     /*Данные читаются из файла выбранного пользователем*/
     QString fileContur = QFileDialog::getOpenFileName(nullptr, tr("Open file"), "", tr("text file (*.txt)"));
@@ -154,6 +152,7 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
                         {
                             x.append(time);//время
                             y.append(znach);//значение
+                            ValueHeader.append(znach);
                             //qDebug() << "x = " << time << ", y = " << znach;
                         }
                     }
@@ -205,6 +204,49 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
         ui->customPlot->yAxis->setRange(minY, maxY);
     }
     ui->customPlot->replot();
+    //QCPGraph *graph = ui->customPlot->graph(0);
+    // //метод подсчета среднего значения
+    // //----------------------------------------------------------------------------
+    // QCPDataSelection selection = ui->customPlot->graph(0)->selection();
+    // if (selection.isEmpty())
+    // {
+    //     qDebug() << "Нет выделенных точек!";
+    //     return;
+    // }
+    // double sum = 0;
+    // foreach (QCPDataRange dataRange, selection.dataRanges())
+    // {
+    //     QCPGraphDataContainer::const_iterator begin = graph->data()->at(dataRange.begin()); // получить итератор запуска диапазона из индекса
+    //     QCPGraphDataContainer::const_iterator end = graph->data()->at(dataRange.end()); // получить конечный итератор диапазона из индекса
+    //     for (QCPGraphDataContainer::const_iterator it=begin; it!=end; ++it)
+    //     {
+    //         // Итератор «it» пройдёт по всем выбранным точкам данных. В качестве примера мы вычисляем среднее значение
+    //         sum += it->value;
+    //         qDebug() << sum;
+    //     }
+    // }
+    // double average = sum/selection.dataPointCount();
+    // //qDebug() << average;
+    // AvarageHeader = average;
+    // ui->lineE_Avarage->setText(QString::number(AvarageHeader));
+    // //----------------------------------------------------------------------------
+
+
+    //метод подсчета среднего значения
+    //----------------------------------------------------------------------------
+    double sum = 0;
+    double ValueHeaderSize = ValueHeader.size();
+    for (const double &VH : ValueHeader)
+    {
+        qDebug() << VH;
+        sum += VH;
+    }
+    double average = sum/ValueHeaderSize;
+    //qDebug() << average;
+    AvarageHeader = average;
+    ui->lineE_Avarage->setText(QString::number(AvarageHeader));
+    ValueHeader.clear();
+    //----------------------------------------------------------------------------
 }
 
 
@@ -287,34 +329,13 @@ void MainWindow::onMouseMove(QMouseEvent* event) {
 
         textWithTracer->setFont(QFont("System",24));//Выбранный шрифт
         textWithTracer->setVisible(true);//видим
-
-
-
     } else if (tracer) {
         tracer->setVisible(false);//не видим
         textWithTracer->setVisible(false);//не видим
     }
-    ui->lineE_Avarage->setText(QString::number(AvarageHeader));
     ui->customPlot->replot();
 
 
-    QCPDataSelection selection = ui->customPlot->graph(0)->selection();
-    double sum = 0;
-    foreach (QCPDataRange dataRange, selection.dataRanges())
-    {
-        QCPGraphDataContainer::const_iterator begin = graph->data()->at(dataRange.begin()); // получить итератор запуска диапазона из индекса
-        QCPGraphDataContainer::const_iterator end = graph->data()->at(dataRange.end()); // получить конечный итератор диапазона из индекса
-        for (QCPGraphDataContainer::const_iterator it=begin; it!=end; ++it)
-        {
-            // Итератор «it» пройдёт по всем выбранным точкам данных. В качестве примера мы вычисляем среднее значение
-            sum += it->value;
-            qDebug() << sum;
-        }
-    }
-    double average = sum/selection.dataPointCount();
-    //qDebug() << average;
-    AvarageHeader = average;
-    ui->lineE_Avarage->setText(QString::number(AvarageHeader));
 }
 
 
