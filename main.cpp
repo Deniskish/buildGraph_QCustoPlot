@@ -1,3 +1,5 @@
+//построение графика по выбранному значению из графика
+
 #include "mainwindow.h"
 
 #include <QApplication>

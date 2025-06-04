@@ -185,7 +185,7 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
 
     ui->customPlot->xAxis->setLabel("Время (сек)");//значение по оси X
     ui->customPlot->yAxis->setLabel(userParametr);//значение по оси Y
-    //ui->customPlot->graph(0)->setBrush(QBrush(QColor(255,50,30,80)));//заливка области под графиком, послений параметр отвечает за прозрачность
+    ui->customPlot->graph(0)->setBrush(QBrush(QColor(36,186,36,111)));//заливка области под графиком, послений параметр отвечает за прозрачность
     ui->customPlot->setMouseTracking(true);//включает отслеживание мыши
     ui->customPlot->setInteraction(QCP::iRangeDrag, true);//отвечает за перемещение графика, по нажатию мыши
     ui->customPlot->setInteraction(QCP::iRangeZoom, true);//отвечает за маштабирование графика, по нажатию мыши
@@ -234,6 +234,8 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
 
     //метод подсчета среднего значения
     //----------------------------------------------------------------------------
+
+
     double sum = 0;
     double ValueHeaderSize = ValueHeader.size();
     for (const double &VH : ValueHeader)
