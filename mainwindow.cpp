@@ -6,14 +6,14 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    this->setWindowTitle("QCustomPlotFO");
+
     ui->setupUi(this);
     //ui->customPlot->graph()->setScatterStyle(QCPScatterStyle::ssCircle);
     //ui->customPlot->graph()->setLineStyle(QCPGraph::lsNone);
     ui->customPlot->setMouseTracking(true);
     connect(ui->customPlot, &QCustomPlot::mouseMove,this,&MainWindow::onMouseMove);
     connect(ui->customPlot, &QCustomPlot::mousePress, this, &MainWindow::onMouseClicked);
-
+    this->setWindowTitle("QCustomPlotFO");
     ui->lineE_NameFile -> setPlaceholderText("Здесь появится путь к файлу, который будет открыт...");
     ui->lineE_ParametrName -> setPlaceholderText("Введите название параметра...");
     ui->lineE_Avarage -> setPlaceholderText("Здесь появится среднее значение...");
