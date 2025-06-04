@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    this->setWindowTitle("QCustomPlotFO");
     ui->setupUi(this);
     //ui->customPlot->graph()->setScatterStyle(QCPScatterStyle::ssCircle);
     //ui->customPlot->graph()->setLineStyle(QCPGraph::lsNone);
@@ -15,7 +16,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->lineE_NameFile -> setPlaceholderText("Здесь появится путь к файлу, который будет открыт...");
     ui->lineE_ParametrName -> setPlaceholderText("Введите название параметра...");
-    ui->lineE_Avarage -> setPlaceholderText("Здесь появится текст...");
+    ui->lineE_Avarage -> setPlaceholderText("Здесь появится среднее значение...");
+    ui->lineE_Min -> setPlaceholderText("Здесь появится минимальное значение...");
+    ui->lineE_Max -> setPlaceholderText("Здесь появится максимальное значение...");
 
     //setupQuadraticDemo(ui->customPlot);
 }
@@ -237,17 +240,24 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
 
 
     double sum = 0;
+    double min = 10000000;
+    double max = 0;
     double ValueHeaderSize = ValueHeader.size();
     for (const double &VH : ValueHeader)
     {
-        qDebug() << VH;
+        if (max < VH) max = VH;
+        if (min > VH) min = VH;
         sum += VH;
     }
     double average = sum/ValueHeaderSize;
     //qDebug() << average;
     AvarageHeader = average;
     ui->lineE_Avarage->setText(QString::number(AvarageHeader));
+    ui->lineE_Min->setText(QString::number(min));
+    ui->lineE_Max->setText(QString::number(max));
     ValueHeader.clear();//очистка массива выплняется, что бы при вводе другого параметра, в него заносились точки только нового графика
+    max = 0;
+    min = 0;
     //----------------------------------------------------------------------------
 }
 
