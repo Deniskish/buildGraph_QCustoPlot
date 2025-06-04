@@ -245,7 +245,7 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
     //qDebug() << average;
     AvarageHeader = average;
     ui->lineE_Avarage->setText(QString::number(AvarageHeader));
-    ValueHeader.clear();
+    ValueHeader.clear();//очистка массива выплняется, что бы при вводе другого параметра, в него заносились точки только нового графика
     //----------------------------------------------------------------------------
 }
 
