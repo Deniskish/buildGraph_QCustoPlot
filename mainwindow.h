@@ -18,6 +18,7 @@
 #include <QString>
 #include <QVector>
 #include <QFileDialog>
+#include <cmath>
 
 struct structPoints{
     float x;
@@ -71,6 +72,10 @@ private slots:
     void on_pushButton_4_clicked();
     void on_pushButton_5_clicked();
     void on_pushButton_6_clicked();
+    void on_auto_scale_clicked();
+
+    void on_export_graph_and_data_clicked();
+
 private:
     Ui::MainWindow *ui;
     QString demoName;

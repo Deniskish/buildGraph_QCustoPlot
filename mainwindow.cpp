@@ -237,8 +237,6 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
 
     //метод подсчета среднего значения
     //----------------------------------------------------------------------------
-
-
     double sum = 0;
     double min = 10000000;
     double max = 0;
@@ -250,11 +248,25 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
         sum += VH;
     }
     double average = sum/ValueHeaderSize;
-    //qDebug() << average;
+    qDebug() << average;
+    qDebug() << min;
+    qDebug() << max;
     AvarageHeader = average;
-    ui->lineE_Avarage->setText(QString::number(AvarageHeader));
-    ui->lineE_Min->setText(QString::number(min));
-    ui->lineE_Max->setText(QString::number(max));
+
+    if (std::isnan(average) || (std::isnan(min)) || (std::isnan(max)) || (max == 1e+07))
+    {
+        ui->lineE_Avarage->setText("Произошла ошибка");
+        ui->lineE_Min->setText("Произошла ошибка");
+        ui->lineE_Max->setText("Произошла ошибка");
+    }
+    else
+    {
+        ui->lineE_Avarage->setText(QString::number(AvarageHeader));
+        ui->lineE_Min->setText(QString::number(min));
+        ui->lineE_Max->setText(QString::number(max));
+    }
+
+
     ValueHeader.clear();//очистка массива выплняется, что бы при вводе другого параметра, в него заносились точки только нового графика
     max = 0;
     min = 0;
@@ -440,4 +452,16 @@ void MainWindow::on_pushButton_6_clicked()//+, Increase
 
 
 
+
+
+void MainWindow::on_auto_scale_clicked()//автоматически подгоняет масштаб по X и по Y
+{
+
+}
+
+
+void MainWindow::on_export_graph_and_data_clicked()
+{
+
+}
 
