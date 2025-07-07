@@ -131,6 +131,7 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
     QVector<double> x, y;
 
     QString userParametr = ui -> lineE_ParametrName -> text().trimmed();//значение указанное пользователем
+    userParametrGlobal = ui -> lineE_ParametrName -> text().trimmed();//значение указанное пользователем
     if (!userParametr.isEmpty())// проверка на непустое значение
     {
         bool ok = false;
@@ -155,7 +156,7 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
                         {
                             x.append(time);//время
                             y.append(znach);//значение
-                            ValueHeader.append(znach);
+                            ValueHeader.append(time);
                             //qDebug() << "x = " << time << ", y = " << znach;
                         }
                     }
@@ -444,7 +445,7 @@ void MainWindow::on_pushButton_6_clicked()//+, Increase
     double centerY = ui->customPlot->yAxis->range().center();
 
     // Увеличение диапазона в 2 раза
-    ui->customPlot->yAxis->scaleRange(1.5, centerY);
+    ui->customPlot->yAxis->scaleRange(2.0, centerY);
     ui->customPlot->replot();
 
 }
@@ -456,11 +457,53 @@ void MainWindow::on_pushButton_6_clicked()//+, Increase
 
 void MainWindow::on_auto_scale_clicked()//автоматически подгоняет масштаб по X и по Y
 {
+    QVector<double> x, y;
 
+    if (!userParametrGlobal.isEmpty())// проверка на непустое значение
+    {
+        for (int i = 0; i < lines.size(); i++)//в lines хранятся строки со значениями, но уже без времени в QVector<String>
+        {
+            QString line = lines[i];// берем каждую строку по индексу
+            double time = secondsList.value(i, -1);// в secondsList хранятся строки со значениями, но уже без времени в QVector<double>
+            QStringList listLine = line.split(";", Qt::SkipEmptyParts);// разбиение линии с индексом i по ";", получается много значений
+            for (const QString& item : listLine)// берется каждый индекс по очереди, например MO_MB = 1, TA_RTS=1 и т.д.
+            {
+                QStringList pereborZnachenie = item.split("=", Qt::SkipEmptyParts);//делится на название и значение
+                if (pereborZnachenie.size() == 2)//проверка, что в строке было два значения. Например TA_RTS=1, станет TA_RTS и 1.
+                {
+                    QString key = pereborZnachenie[0].trimmed();//присваивание key первого индекса и удаление пробела к конце
+                    QString znachStr = pereborZnachenie[1].trimmed();//присваивание znachStr второго индекса и удаление пробела к конце
+                    if (key == userParametrGlobal)//провека равно ли значение тому, что задал пользователь
+                    {
+                        bool ok;
+                        double znach = znachStr.toDouble(&ok);//преобразование в double
+                        if (ok && time >= 0)
+                        {
+                            x.append(time);//время
+                            y.append(znach);//значение
+                            //qDebug() << "x = " << time << ", y = " << znach;
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+    if (!x.isEmpty()) {
+        ui->customPlot->xAxis->setRange(x.first(), x.last());//диапозон оси время
+    }
+
+
+    if (!y.isEmpty()) {
+        double minY = *std::min_element(y.begin(), y.end());
+        double maxY = *std::max_element(y.begin(), y.end());
+        ui->customPlot->yAxis->setRange(minY, maxY);
+    }
+    ui->customPlot->replot();
 }
 
 
-void MainWindow::on_export_graph_and_data_clicked()
+void MainWindow::on_export_graph_and_data_clicked()//сохраняющая текущий график в файл с названием переменной и датой-временем начала ее съемки в текстовый файл со строками время - значение
 {
 
 }

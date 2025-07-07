@@ -58,6 +58,7 @@ public:
     QStringList dataList;
     double AvarageHeader;
     QVector<double> ValueHeader;
+    QString userParametrGlobal;
 
     int xAxis;
     int yAxis;
