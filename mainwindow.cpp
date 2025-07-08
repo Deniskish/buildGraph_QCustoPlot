@@ -236,19 +236,17 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
     //метод подсчета среднего значения
     //----------------------------------------------------------------------------
     double sum = 0;
-    double min = 10000000;
-    double max = 0;
+    double min = *std::min_element(ValueHeader.begin(), ValueHeader.end());
+    double max = *std::max_element(ValueHeader.begin(), ValueHeader.end());
     double ValueHeaderSize = ValueHeader.size();
     for (const double &VH : ValueHeader)
     {
-        if (max < VH) max = VH;
-        if (min > VH) min = VH;
         sum += VH;
     }
     double average = sum/ValueHeaderSize;
-    qDebug() << average;
-    qDebug() << min;
-    qDebug() << max;
+    qDebug() << "Среднее значение = " << average;
+    qDebug() << "Минимаьлное значение = " << min;
+    qDebug() << "Максимальное значение = " << max;
     AvarageHeader = average;
 
     if (std::isnan(average) || (std::isnan(min)) || (std::isnan(max)) || (max == 1e+07))
@@ -259,7 +257,7 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
     }
     else
     {
-        ui->lineE_Avarage->setText(QString::number(AvarageHeader));
+        ui->lineE_Avarage->setText(QString::number(average));
         ui->lineE_Min->setText(QString::number(min));
         ui->lineE_Max->setText(QString::number(max));
     }
