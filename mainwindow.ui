@@ -114,7 +114,7 @@
        <widget class="QPushButton" name="export_graph_and_data">
         <property name="minimumSize">
          <size>
-          <width>92</width>
+          <width>93</width>
           <height>40</height>
          </size>
         </property>

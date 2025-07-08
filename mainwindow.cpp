@@ -388,29 +388,26 @@ void MainWindow::on_pushButton_4_clicked()
 
     // }
     if( fileContur_Name.endsWith(".txt") ){
-        QMessageBox::information(this,"success","«Успешно сохранено в виде PDF-файла»");
-
-
         //Сохранить файл с окончанием на .pdf
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Open File"), "", tr("text file (*.pdf)"));
-        qDebug() << "Выбран файл:" << fileName;
-        fileContur_NameNew = fileName;
+        QString TDL = "[" + timeDateList.first().toString("yyyy-MM-dd_HH-mm-ss.zzz") + "]";
+        QString fileName = "Graph " + userParametrGlobal + "__" + TDL + ".pdf";
+        QString folderName = userParametrGlobal;
 
-        if (fileName.isEmpty()) return;
+        QString fileway = QDir::currentPath() + "/" + folderName + "/" + fileName;
+        QFile file(fileway);
+        QDir().mkpath(folderName);
 
-        QFile file(fileName);
-        if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
+        fileContur_NameNew = fileway;//полный путь к файлу
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
             qDebug() << "Не удалось открыть файл для записи!";
             return;
         }
-        file.close();
-
-
         ui->customPlot->savePdf( fileContur_NameNew, ui->customPlot->width(), ui->customPlot->height());
+        // QMessageBox::information(this,"success","«Успешно сохранено в виде PDF-файла»");
     }
     else{
         // В противном случае гиперссылка называется «Сохранить файл в формате .pdf»
-        QMessageBox::information(this,"успешно","Успешно сохранено в формате PDF по умолчанию (работает условие else");
+        // QMessageBox::information(this,"успешно","Успешно сохранено в формате PDF по умолчанию (работает условие else");
         ui->customPlot->savePdf(fileContur_Name.append(".pdf"), ui->customPlot->width(), ui->customPlot->height() );
     }
 }
@@ -443,10 +440,6 @@ void MainWindow::on_pushButton_6_clicked()//+, Increase
     ui->customPlot->replot();
 
 }
-
-
-
-
 
 
 void MainWindow::on_auto_scale_clicked()//автоматически подгоняет масштаб по X и по Y
@@ -494,23 +487,28 @@ void MainWindow::on_auto_scale_clicked()//автоматически подго�
 
 
 void MainWindow::on_export_graph_and_data_clicked()//сохраняет текстовый файл с названием переменной и датой-временем начала ее съемки в текстовый файл со строками время - значение
-{
-    QString fileContur = QFileDialog::getSaveFileName(nullptr, tr("Open file"), "", tr("text file (*.txt)"));
-    qDebug() << "Выбран файл:" << fileContur;
-    QFile file(fileContur);
+{   
+    QString TDL = "[" + timeDateList.first().toString("yyyy-MM-dd_HH-mm-ss.zzz") + "]";
+    QString fileName = userParametrGlobal + "__" + TDL + ".txt";//имя для файла куда будет загружено
+    QString folderName = userParametrGlobal;//имя для папки
+
+    QString fileway = QDir::currentPath() + "/" + folderName + "/" + fileName;//путь для загрузки файла
+    QFile file(fileway);
+    QDir().mkpath(folderName);//создается папка, если ее не было
     if (file.open(QIODevice::ReadWrite | QIODevice::Text))
     {
         QTextStream out(&file);
         for (int i = 0; i < timeDateList.size() && i < ValueHeaderStr.size(); i++)
         {
             out << "[" << timeDateList[i].toString("yyyy-MM-dd_HH-mm-ss.zzz") << "] " << ValueHeaderStr[i] << "\n";
-            qDebug() << ValueHeaderStr[i];
         }
         file.close();
+        // QMessageBox::information(this,"success","«Успешно сохранено в виде txt-файла»");
     }
     else
     {
-    qDebug() << "Не удалось открыть файл для записи";
+        qDebug() << "Не удалось открыть файл для записи";
+        // QMessageBox::information(this,"fail","Сохранить не удалось");
+        return;
     }
-
 }
