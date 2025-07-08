@@ -65,7 +65,7 @@ void MainWindow::on_pushButton_clicked()//кнопка Open file
     /*Данные считываются с LineEdit и добавляются в QVector*/
     /*Данные читаются из файла выбранного пользователем*/
     QString fileContur = QFileDialog::getOpenFileName(nullptr, tr("Open file"), "", tr("text file (*.txt)"));
-    qDebug() << "Выбран файл" << fileContur;
+    qDebug() << "Выбран файл:" << fileContur;
     ui -> lineE_NameFile -> insert(fileContur);
 
     if (fileContur.isEmpty()) return;//если файл пустой выход из окна
@@ -92,8 +92,6 @@ void MainWindow::on_pushButton_clicked()//кнопка Open file
             if (line.startsWith("[")){
                 int end = line.indexOf("]");
                 if (end != -1) {//Проверяем, нашли ли мы скобку ]. Если indexOf вернёт -1, значит ] не найден, и дальше идти нельзя.
-
-
                     QString timeStr = line.mid(1, end-1);//извлекает end-1 символов, ничная с 1(то есть, получится знаение между [ и ], это и есть время
                     dateTime = QDateTime::fromString(timeStr, "yyyy-MM-dd_HH-mm-ss.zzz");//определил QDateTime
                     if (!dateTime.isValid()) continue;
@@ -130,12 +128,11 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
     // }
     QVector<double> x, y;
 
-    QString userParametr = ui -> lineE_ParametrName -> text().trimmed();//значение указанное пользователем
     userParametrGlobal = ui -> lineE_ParametrName -> text().trimmed();//значение указанное пользователем
-    if (!userParametr.isEmpty())// проверка на непустое значение
+    if (!userParametrGlobal.isEmpty())// проверка на непустое значение
     {
         bool ok = false;
-        userParametr.toDouble(&ok);// перевод значения в double
+        userParametrGlobal.toDouble(&ok);// перевод значения в double
         for (int i = 0; i < lines.size(); i++)//в lines хранятся строки со значениями, но уже без времени в QVector<String>
         {
             QString line = lines[i];// берем каждую строку по индексу
@@ -148,15 +145,17 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
                 {
                     QString key = pereborZnachenie[0].trimmed();//присваивание key первого индекса и удаление пробела к конце
                     QString znachStr = pereborZnachenie[1].trimmed();//присваивание znachStr второго индекса и удаление пробела к конце
-                    if (key == userParametr)//провека равно ли значение тому, что задал пользователь
+
+                    if (key == userParametrGlobal)//провека равно ли значение тому, что задал пользователь
                     {
+                        ValueHeaderStr.append(znachStr);
                         bool ok;
                         double znach = znachStr.toDouble(&ok);//преобразование в double
                         if (ok && time >= 0)
                         {
                             x.append(time);//время
                             y.append(znach);//значение
-                            ValueHeader.append(time);
+                            ValueHeader.append(znach);
                             //qDebug() << "x = " << time << ", y = " << znach;
                         }
                     }
@@ -188,7 +187,7 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
     //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     ui->customPlot->xAxis->setLabel("Время (сек)");//значение по оси X
-    ui->customPlot->yAxis->setLabel(userParametr);//значение по оси Y
+    ui->customPlot->yAxis->setLabel(userParametrGlobal);//значение по оси Y
     ui->customPlot->graph(0)->setBrush(QBrush(QColor(36,186,36,111)));//заливка области под графиком, послений параметр отвечает за прозрачность
     ui->customPlot->setMouseTracking(true);//включает отслеживание мыши
     ui->customPlot->setInteraction(QCP::iRangeDrag, true);//отвечает за перемещение графика, по нажатию мыши
@@ -200,8 +199,6 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
     if (!x.isEmpty()) {
         ui->customPlot->xAxis->setRange(x.first(), x.last());//диапозон оси время
     }
-
-
     if (!y.isEmpty()) {
         double minY = *std::min_element(y.begin(), y.end());
         double maxY = *std::max_element(y.begin(), y.end());
@@ -314,7 +311,6 @@ void MainWindow::onMouseMove(QMouseEvent* event) {
         {
             tracer->setGraph(ui->customPlot->graph(0));
         }
-
         if (!tracer) {//если маркера не было(в начале его и не будет)
             tracer = new QCPItemTracer(ui->customPlot);//создается новый QCPItemTracer (маркер)
             tracer->setGraph(ui->customPlot->graph(0));//привязка к графу
@@ -322,12 +318,10 @@ void MainWindow::onMouseMove(QMouseEvent* event) {
             tracer->setBrush(Qt::red);//заливка
             tracer->setStyle(QCPItemTracer::tsCircle);//форма
             tracer->setSize(7);//размер
-
             textWithTracer = new QCPItemText(ui->customPlot);
             //textWithTracer->setText(timeDateList(closestIndex));
             textWithTracer->position->setParentAnchor(tracer->position);
         }
-
         tracer->setGraphKey(ui->customPlot->graph(0)->data()->at(closestIndex)->key);//Устанавливаем положение маркера строго на координату X найденной ближайшей точки.
         tracer->setVisible(true);//маркер видим
         textWithTracer->setVisible(true);//маркер видим
@@ -458,7 +452,6 @@ void MainWindow::on_pushButton_6_clicked()//+, Increase
 void MainWindow::on_auto_scale_clicked()//автоматически подгоняет масштаб по X и по Y
 {
     QVector<double> x, y;
-
     if (!userParametrGlobal.isEmpty())// проверка на непустое значение
     {
         for (int i = 0; i < lines.size(); i++)//в lines хранятся строки со значениями, но уже без времени в QVector<String>
@@ -484,7 +477,6 @@ void MainWindow::on_auto_scale_clicked()//автоматически подго�
                             //qDebug() << "x = " << time << ", y = " << znach;
                         }
                     }
-
                 }
             }
         }
@@ -492,8 +484,6 @@ void MainWindow::on_auto_scale_clicked()//автоматически подго�
     if (!x.isEmpty()) {
         ui->customPlot->xAxis->setRange(x.first(), x.last());//диапозон оси время
     }
-
-
     if (!y.isEmpty()) {
         double minY = *std::min_element(y.begin(), y.end());
         double maxY = *std::max_element(y.begin(), y.end());
@@ -503,8 +493,24 @@ void MainWindow::on_auto_scale_clicked()//автоматически подго�
 }
 
 
-void MainWindow::on_export_graph_and_data_clicked()//сохраняющая текущий график в файл с названием переменной и датой-временем начала ее съемки в текстовый файл со строками время - значение
+void MainWindow::on_export_graph_and_data_clicked()//сохраняет текстовый файл с названием переменной и датой-временем начала ее съемки в текстовый файл со строками время - значение
 {
+    QString fileContur = QFileDialog::getSaveFileName(nullptr, tr("Open file"), "", tr("text file (*.txt)"));
+    qDebug() << "Выбран файл:" << fileContur;
+    QFile file(fileContur);
+    if (file.open(QIODevice::ReadWrite | QIODevice::Text))
+    {
+        QTextStream out(&file);
+        for (int i = 0; i < timeDateList.size() && i < ValueHeaderStr.size(); i++)
+        {
+            out << "[" << timeDateList[i].toString("yyyy-MM-dd_HH-mm-ss.zzz") << "] " << ValueHeaderStr[i] << "\n";
+            qDebug() << ValueHeaderStr[i];
+        }
+        file.close();
+    }
+    else
+    {
+    qDebug() << "Не удалось открыть файл для записи";
+    }
 
 }
-

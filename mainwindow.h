@@ -58,7 +58,8 @@ public:
     QStringList dataList;
     double AvarageHeader;
     QVector<double> ValueHeader;
-    QString userParametrGlobal;
+    QVector<QString> ValueHeaderStr;
+    QString userParametrGlobal;//параметр для отрисовки графика, вводит пользователь
 
     int xAxis;
     int yAxis;
