@@ -49,7 +49,7 @@ public:
 
     QVector<QString>lines;
     QString listznacheniy;
-    QString fileContur_Name;
+    QString fileContur_Name;//параметр для отрисовки графика, вводит пользователь
     QString fileContur_NameNew;
 
     QVector<double> secondsList;
@@ -75,8 +75,7 @@ private slots:
     void on_pushButton_5_clicked();
     void on_pushButton_6_clicked();
     void on_auto_scale_clicked();
-
-    void on_export_graph_and_data_clicked();
+    void on_export_data_clicked();
 
 private:
     Ui::MainWindow *ui;

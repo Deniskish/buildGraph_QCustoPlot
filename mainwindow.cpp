@@ -62,6 +62,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()//кнопка Open file
 {
+    ui->customPlot->clearGraphs();//очищает график
+    ui->lineE_NameFile->clear();
+    lines.clear();
+    secondsList.clear();
+    timeDateList.clear();//очистка данных старого графика
+    ui->customPlot->replot();
     /*Данные считываются с LineEdit и добавляются в QVector*/
     /*Данные читаются из файла выбранного пользователем*/
     QString fileContur = QFileDialog::getOpenFileName(nullptr, tr("Open file"), "", tr("text file (*.txt)"));
@@ -111,6 +117,13 @@ void MainWindow::on_pushButton_clicked()//кнопка Open file
                     //qDebug() << line;
                 }
             }
+            else
+            {
+                fileContur_Name.clear();
+                ui->lineE_NameFile->clear();
+                QMessageBox::information(this, "fail", "Ошибка файла, проверьте содержание файла");
+                return;
+            }
         }
         filePotok.close();
     }
@@ -119,7 +132,18 @@ void MainWindow::on_pushButton_clicked()//кнопка Open file
 
 void MainWindow::on_pushButton_2_clicked()//кнопка Show
 {
+    if( fileContur_Name == "" ){
+        QMessageBox::information(this,"fail","Не удалось отобразить график");
+        return;
+    }
     ui->customPlot->clearGraphs();//очищает график
+    if (tracer) tracer->setVisible(false);
+    if (textWithTracer) textWithTracer->setVisible(false);
+    ui->lineE_Avarage->clear();
+    ui->lineE_Min->clear();
+    ui->lineE_Max->clear();
+    ui->customPlot->replot();
+
     // for (const QString &dt : dataList){//для теста
     //     qDebug() << "Время" << dt;
     // }
@@ -129,42 +153,39 @@ void MainWindow::on_pushButton_2_clicked()//кнопка Show
     QVector<double> x, y;
 
     userParametrGlobal = ui -> lineE_ParametrName -> text().trimmed();//значение указанное пользователем
-    if (!userParametrGlobal.isEmpty())// проверка на непустое значение
+    bool ok = false;
+    userParametrGlobal.toDouble(&ok);// перевод значения в double
+    for (int i = 0; i < lines.size(); i++)//в lines хранятся строки со значениями, но уже без времени в QVector<String>
     {
-        bool ok = false;
-        userParametrGlobal.toDouble(&ok);// перевод значения в double
-        for (int i = 0; i < lines.size(); i++)//в lines хранятся строки со значениями, но уже без времени в QVector<String>
+        QString line = lines[i];// берем каждую строку по индексу
+        double time = secondsList.value(i, -1);// в secondsList хранятся строки со значениями, но уже без времени в QVector<double>
+        QStringList listLine = line.split(";", Qt::SkipEmptyParts);// разбиение линии с индексом i по ";", получается много значений
+        for (const QString& item : listLine)// берется каждый индекс по очереди, например MO_MB = 1, TA_RTS=1 и т.д.
         {
-            QString line = lines[i];// берем каждую строку по индексу
-            double time = secondsList.value(i, -1);// в secondsList хранятся строки со значениями, но уже без времени в QVector<double>
-            QStringList listLine = line.split(";", Qt::SkipEmptyParts);// разбиение линии с индексом i по ";", получается много значений
-            for (const QString& item : listLine)// берется каждый индекс по очереди, например MO_MB = 1, TA_RTS=1 и т.д.
+            QStringList pereborZnachenie = item.split("=", Qt::SkipEmptyParts);//делится на название и значение
+            if (pereborZnachenie.size() == 2)//проверка, что в строке было два значения. Например TA_RTS=1, станет TA_RTS и 1.
             {
-                QStringList pereborZnachenie = item.split("=", Qt::SkipEmptyParts);//делится на название и значение
-                if (pereborZnachenie.size() == 2)//проверка, что в строке было два значения. Например TA_RTS=1, станет TA_RTS и 1.
+                QString key = pereborZnachenie[0].trimmed();//присваивание key первого индекса и удаление пробела к конце
+                QString znachStr = pereborZnachenie[1].trimmed();//присваивание znachStr второго индекса и удаление пробела к конце
+
+                if (key == userParametrGlobal)//провека равно ли значение тому, что задал пользователь
                 {
-                    QString key = pereborZnachenie[0].trimmed();//присваивание key первого индекса и удаление пробела к конце
-                    QString znachStr = pereborZnachenie[1].trimmed();//присваивание znachStr второго индекса и удаление пробела к конце
-
-                    if (key == userParametrGlobal)//провека равно ли значение тому, что задал пользователь
+                    ValueHeaderStr.append(znachStr);
+                    bool ok;
+                    double znach = znachStr.toDouble(&ok);//преобразование в double
+                    if (ok && time >= 0)
                     {
-                        ValueHeaderStr.append(znachStr);
-                        bool ok;
-                        double znach = znachStr.toDouble(&ok);//преобразование в double
-                        if (ok && time >= 0)
-                        {
-                            x.append(time);//время
-                            y.append(znach);//значение
-                            ValueHeader.append(znach);
-                            //qDebug() << "x = " << time << ", y = " << znach;
-                        }
+                        x.append(time);//время
+                        y.append(znach);//значение
+                        ValueHeader.append(znach);
+                        //qDebug() << "x = " << time << ", y = " << znach;
                     }
-
                 }
+
             }
         }
-
     }
+    if (ValueHeader.isEmpty()) return;
     ui->customPlot->clearGraphs();//очищает график
     // ui->customPlot->xAxis2->setVisible(true);  // верхняя ось(по умолчанию скрыта), так и не понял, зачем эти оси
     // ui->customPlot->yAxis2->setVisible(true);  // правая ось(по умолчанию скрыта)
@@ -279,7 +300,7 @@ void MainWindow::onMouseClicked(QMouseEvent *event)
 void MainWindow::onMouseMove(QMouseEvent* event) {
     if (!ui->customPlot->graphCount()) return;
     // Получить координаты мыши в координатах графика
-    int x = ui->customPlot->xAxis->pixelToCoord(event->pos().x());//pixelToCoord преобразует координату из пикселей окна в координаты данных графика (число с плавающей точкой).
+    int x = ui->customPlot->xAxis->pixelToCoord(event->pos().x());//pixelToCoord преобразует координату из пикселей окна в координаты данных графика
     int y = ui->customPlot->yAxis->pixelToCoord(event->pos().y());
 
     // Нахождение ближайшей точкки данных (пример с QCPGraph)
@@ -388,7 +409,7 @@ void MainWindow::on_pushButton_4_clicked()
     if( fileContur_Name.endsWith(".txt") ){
         //Сохранить файл с окончанием на .pdf
         QString TDL = "[" + timeDateList.first().toString("yyyy-MM-dd_HH-mm-ss.zzz") + "]";
-        QString fileName = "Graph " + userParametrGlobal + "__" + TDL + ".pdf";
+        QString fileName = "Graph__" + userParametrGlobal + "__" + TDL + ".pdf";
         QString folderName = userParametrGlobal;
 
         QString fileway = QDir::currentPath() + "/" + folderName + "/" + fileName;
@@ -413,6 +434,10 @@ void MainWindow::on_pushButton_4_clicked()
 
 void MainWindow::on_pushButton_5_clicked()//-, Reduce
 {
+    if( fileContur_Name == "" ){
+        QMessageBox::information(this,"fail","Не удалось изменить маштаб");
+        return;
+    }
     //ui->customPlot->setInteraction(QCP::iMultiSelect, true);
 
 
@@ -427,6 +452,10 @@ void MainWindow::on_pushButton_5_clicked()//-, Reduce
 
 void MainWindow::on_pushButton_6_clicked()//+, Increase
 {
+    if( fileContur_Name == "" ){
+        QMessageBox::information(this,"fail","Не удалось отобразить маштаб");
+        return;
+    }
     //ui->customPlot->axisRect()->setRangeZoomAxes(ui->customPlot->xAxis, ui->customPlot->yAxis);//по сути то же перемещение графика
 
 
@@ -484,9 +513,17 @@ void MainWindow::on_auto_scale_clicked()//автоматически подго�
 }
 
 
-void MainWindow::on_export_graph_and_data_clicked()//сохраняет текстовый файл с названием переменной и датой-временем начала ее съемки в текстовый файл со строками время - значение
-{   
-    QString TDL = "[" + timeDateList.first().toString("yyyy-MM-dd_HH-mm-ss.zzz") + "]";
+void MainWindow::on_export_data_clicked()//сохраняет текстовый файл с названием переменной и датой-временем начала ее съемки в текстовый файл со строками время - значение
+{
+    if( fileContur_Name == "" ){
+        QMessageBox::information(this,"fail","Сохранить не удалось");
+        return;
+    }
+    QString TDL = "[" + timeDateList.first().toString("yyyy-MM-dd_HH-mm-ss.zzz") + "]";//имя файла
+    if( userParametrGlobal == "" || userParametrGlobal.isEmpty()){
+        QMessageBox::information(this,"fail","Ошибка файла");
+        return;
+    }
     QString fileName = userParametrGlobal + "__" + TDL + ".txt";//имя для файла куда будет загружено
     QString folderName = userParametrGlobal;//имя для папки
 
