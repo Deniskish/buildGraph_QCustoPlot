@@ -13,6 +13,12 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QMainWindow {
+	border:  2px solid #8f8f91;
+	/* background-image: url(&quot;:/img/Metallic Surface.jpg&quot;); */
+}</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0,0,0">
     <item>
@@ -25,6 +31,17 @@
           <height>40</height>
          </size>
         </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+	/* border: 1px solid #455d6b; */
+	border: 1px solid #455D6B;
+    /* border-radius: 7px; */
+	background-color: qradialgradient(cx:0, cy:0, radius: 1.2,
+                fx:0, fy:0, stop:0 #949090, stop:1 #25211E);
+	color: #e9e9e9;
+	font-size: 20px;
+}</string>
+        </property>
         <property name="text">
          <string>Open file</string>
         </property>
@@ -32,6 +49,14 @@
       </item>
       <item>
        <widget class="QLineEdit" name="lineE_NameFile">
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+	border-color: #455D6B;
+	border: 1px solid #455D6B;
+	/*background-color: #f6f7fa;*/
+	background-color: rgba(146,168,181,0.5);
+}</string>
+        </property>
         <property name="readOnly">
          <bool>true</bool>
         </property>
@@ -55,6 +80,17 @@
         <property name="cursor">
          <cursorShape>ArrowCursor</cursorShape>
         </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+	/* border: 1px solid #455d6b; */
+	border: 1px solid #455D6B;
+    /* border-radius: 7px; */
+	background-color: qradialgradient(cx:0, cy:0, radius: 1.2,
+                fx:0, fy:0, stop:0 #949090, stop:1 #25211E);
+	color: #e9e9e9;
+	font-size: 20px;
+}</string>
+        </property>
         <property name="text">
          <string>+, Increase</string>
         </property>
@@ -68,6 +104,17 @@
           <height>40</height>
          </size>
         </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+	/* border: 1px solid #455d6b; */
+	border: 1px solid #455D6B;
+    /* border-radius: 7px; */
+	background-color: qradialgradient(cx:0, cy:0, radius: 1.2,
+                fx:0, fy:0, stop:0 #949090, stop:1 #25211E);
+	color: #e9e9e9;
+	font-size: 20px;
+}</string>
+        </property>
         <property name="text">
          <string>-, Reduce</string>
         </property>
@@ -79,6 +126,14 @@
      <layout class="QHBoxLayout" name="horizontalLayout_6">
       <item>
        <widget class="QLabel" name="label">
+        <property name="styleSheet">
+         <string notr="true">QLabel
+{
+	color: black;
+	font-size: 14px;
+}
+</string>
+        </property>
         <property name="text">
          <string>Parametr name:</string>
         </property>
@@ -95,6 +150,14 @@
           <height>0</height>
          </size>
         </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+	border-color: #455D6B;
+	border: 1px solid #455D6B;
+	/*background-color: #f6f7fa;*/
+	background-color: rgba(146,168,181,0.5);
+}</string>
+        </property>
        </widget>
       </item>
       <item>
@@ -104,6 +167,17 @@
           <width>90</width>
           <height>40</height>
          </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+	/* border: 1px solid #455d6b; */
+	border: 1px solid #455D6B;
+    /* border-radius: 7px; */
+	background-color: qradialgradient(cx:0, cy:0, radius: 1.2,
+                fx:0, fy:0, stop:0 #949090, stop:1 #25211E);
+	color: #e9e9e9;
+	font-size: 20px;
+}</string>
         </property>
         <property name="text">
          <string>Auto Scale</string>
@@ -118,6 +192,17 @@
           <height>40</height>
          </size>
         </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+	/* border: 1px solid #455d6b; */
+	border: 1px solid #455D6B;
+    /* border-radius: 7px; */
+	background-color: qradialgradient(cx:0, cy:0, radius: 1.2,
+                fx:0, fy:0, stop:0 #949090, stop:1 #25211E);
+	color: #e9e9e9;
+	font-size: 20px;
+}</string>
+        </property>
         <property name="text">
          <string>Export data</string>
         </property>
@@ -130,6 +215,17 @@
           <width>90</width>
           <height>40</height>
          </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+	/* border: 1px solid #455d6b; */
+	border: 1px solid #455D6B;
+    /* border-radius: 7px; */
+	background-color: qradialgradient(cx:0, cy:0, radius: 1.2,
+                fx:0, fy:0, stop:0 #949090, stop:1 #25211E);
+	color: #e9e9e9;
+	font-size: 20px;
+}</string>
         </property>
         <property name="text">
          <string>Save to pdf</string>
@@ -147,6 +243,17 @@
           <height>40</height>
          </size>
         </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+	/* border: 1px solid #455d6b; */
+	border: 1px solid #455D6B;
+    /* border-radius: 7px; */
+	background-color: qradialgradient(cx:0, cy:0, radius: 1.2,
+                fx:0, fy:0, stop:0 #949090, stop:1 #25211E);
+	color: #e9e9e9;
+	font-size: 20px;
+}</string>
+        </property>
         <property name="text">
          <string>Close</string>
         </property>
@@ -163,6 +270,17 @@
           <height>40</height>
          </size>
         </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+	/* border: 1px solid #455d6b; */
+	border: 1px solid #455D6B;
+    /* border-radius: 7px; */
+	background-color: qradialgradient(cx:0, cy:0, radius: 1.2,
+                fx:0, fy:0, stop:0 #949090, stop:1 #25211E);
+	color: #e9e9e9;
+	font-size: 20px;
+}</string>
+        </property>
         <property name="text">
          <string>Show</string>
         </property>
@@ -177,6 +295,14 @@
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
        <widget class="QLabel" name="label_Min_2">
+        <property name="styleSheet">
+         <string notr="true">QLabel
+{
+	color: black;
+	font-size: 14px;
+}
+</string>
+        </property>
         <property name="text">
          <string>Maximum chart value</string>
         </property>
@@ -193,6 +319,14 @@
         <property name="autoFillBackground">
          <bool>false</bool>
         </property>
+        <property name="styleSheet">
+         <string notr="true">QLabel
+{
+	color: black;
+	font-size: 14px;
+}
+</string>
+        </property>
         <property name="text">
          <string>Minimum chart value</string>
         </property>
@@ -206,6 +340,14 @@
       </item>
       <item row="0" column="2">
        <widget class="QLabel" name="label_Avarage">
+        <property name="styleSheet">
+         <string notr="true">QLabel
+{
+	color: black;
+	font-size: 14px;
+}
+</string>
+        </property>
         <property name="text">
          <string>The average value of the data on the graph</string>
         </property>
@@ -222,6 +364,14 @@
           <height>0</height>
          </size>
         </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+	border-color: #455D6B;
+	border: 1px solid #455D6B;
+	/*background-color: #f6f7fa;*/
+	background-color: rgba(146,168,181,0.5);
+}</string>
+        </property>
         <property name="readOnly">
          <bool>true</bool>
         </property>
@@ -235,6 +385,14 @@
           <height>0</height>
          </size>
         </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+	border-color: #455D6B;
+	border: 1px solid #455D6B;
+	/*background-color: #f6f7fa;*/
+	background-color: rgba(146,168,181,0.5);
+}</string>
+        </property>
         <property name="readOnly">
          <bool>true</bool>
         </property>
@@ -242,6 +400,14 @@
       </item>
       <item row="1" column="0">
        <widget class="QLineEdit" name="lineE_Max">
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+	border-color: #455D6B;
+	border: 1px solid #455D6B;
+	/*background-color: #f6f7fa;*/
+	background-color: rgba(146,168,181,0.5);
+}</string>
+        </property>
         <property name="readOnly">
          <bool>true</bool>
         </property>
