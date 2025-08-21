@@ -1,6 +1,14 @@
+VERSION = 1.0.3
+
 QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
+
+TARGET = QCustomPlotFO_$${VERSION}
+
+TEMPLATE = app
+
+DEFINES += QT_DEPRECATED_WARNINGS
 
 CONFIG += c++17
 

@@ -18,6 +18,7 @@
 #include <QString>
 #include <QVector>
 #include <QFileDialog>
+#include <cmath>
 
 struct structPoints{
     float x;
@@ -48,7 +49,7 @@ public:
 
     QVector<QString>lines;
     QString listznacheniy;
-    QString fileContur_Name;
+    QString fileContur_Name;//параметр для отрисовки графика, вводит пользователь
     QString fileContur_NameNew;
 
     QVector<double> secondsList;
@@ -57,6 +58,8 @@ public:
     QStringList dataList;
     double AvarageHeader;
     QVector<double> ValueHeader;
+    QVector<QString> ValueHeaderStr;
+    QString userParametrGlobal;//параметр для отрисовки графика, вводит пользователь
 
     int xAxis;
     int yAxis;
@@ -71,6 +74,9 @@ private slots:
     void on_pushButton_4_clicked();
     void on_pushButton_5_clicked();
     void on_pushButton_6_clicked();
+    void on_auto_scale_clicked();
+    void on_export_data_clicked();
+
 private:
     Ui::MainWindow *ui;
     QString demoName;
